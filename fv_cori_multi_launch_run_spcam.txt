@@ -1,0 +1,283 @@
+#!/bin/csh
+
+set run_time       = 10:29:00
+set queue          = regular 
+set priority       = premium 
+set account        = m2222
+set run_start_date = "2008-10-15"
+set start_tod      = "00000"
+#set start_tod      = "43200"
+set Np             = 4032 
+set Np_else        = 512 
+
+## ====================================================================
+#   define case
+## ====================================================================
+
+setenv CCSMTAG     UltraCAM-spcam2_0_cesm1_1_1
+#setenv CASE        UP_FV_r1_8x8CRM250m_5mrad_1d_YTC_nZM_L125_20081015_0Z_$Np
+#setenv CASE        4x5test_FV_r1_MPD_8x1CRM250m_5mrad_1h_YTC_nZM_L125_20081015_0Z_$Np
+#setenv CASE        ADVmod_-700_vdfix_r9_UM5_8x81CRM250m_5mrad_1d_L125_20081015_0Z_$Np
+#setenv CASE        long_FV_r1_MPD_8x1CRM250m_5mrad_1mo_YTC_nZM_L125_20081015_0Z_$Np
+#setenv CASE        C128_r2_CRMSUBS_LES120_MPD_CRM250m_5mrad_36h_L125_20081014_12Z_$Np
+setenv CASE        newhope_r7_3xacc_MPD_8x1CRM50m_2mrad_24h_L253_20081015_0Z_$Np
+#setenv CASESET     F_AMIP_CAM5
+#setenv CASESET     F_AMIP_UPSPmiddle_m2005
+#setenv CASESET     F_AMIP_miniUP_m2005 
+setenv CASESET     F_AMIP_SPDEBUG_m2005
+#setenv CASESET     F_AMIP_SPCAM_3DCRM_m2005
+#setenv CASESET     F_AMIP_SPCAM_m2005
+#setenv CASESET     F_2000_SPCAM_sam1mom
+#setenv CASERES     f09_g16
+setenv CASERES     f19_g16
+#setenv CASERES     f45_f45
+setenv PROJECT     m2222
+
+## ====================================================================
+#   define directories
+## ====================================================================
+
+setenv MACH      corip1 
+setenv CCSMROOT  $HOME/$CCSMTAG
+setenv CASEROOT  $HOME/cases/$CASE
+setenv PTMP      $SCRATCH
+setenv RUNDIR    $PTMP/$CASE/run
+setenv ARCHDIR   $PTMP/archive/$CASE
+setenv DATADIR   /global/project/projectdirs/PNNL-PJR/csm/inputdata
+setenv DIN_LOC_ROOT_CSMDATA $DATADIR
+#setenv mymodscam $HOME/mymods/$CCSMTAG/CAM
+#mkdir -p $mymodscam
+
+## ====================================================================
+#   create new case, configure, compile and run
+## ====================================================================
+
+rm -rf $CASEROOT
+rm -rf $PTMP/$CASE
+#rm -rf $PTMP/$CASE
+
+#------------------
+## create new case
+#------------------
+
+cd  $CCSMROOT/scripts
+
+./create_newcase -case $CASEROOT -mach $MACH -res $CASERES -compset $CASESET -compiler intel -v
+
+#------------------
+## set environment
+#------------------
+
+cd $CASEROOT
+
+#set ntasks = $Np
+./xmlchange  -file env_mach_pes.xml -id  NTASKS_ATM  -val=$Np
+./xmlchange  -file env_mach_pes.xml -id  NTASKS_LND  -val=$Np_else
+./xmlchange  -file env_mach_pes.xml -id  NTASKS_ICE  -val=$Np_else
+./xmlchange  -file env_mach_pes.xml -id  NTASKS_OCN  -val=$Np_else
+./xmlchange  -file env_mach_pes.xml -id  NTASKS_CPL  -val=$Np_else
+./xmlchange  -file env_mach_pes.xml -id  NTASKS_GLC  -val=$Np_else
+./xmlchange  -file env_mach_pes.xml -id  NTASKS_ROF  -val=$Np_else
+./xmlchange  -file env_mach_pes.xml -id  TOTALPES    -val=$Np
+
+set-run-opts:
+cd $CASEROOT
+
+./xmlchange  -file env_run.xml -id  RESUBMIT      -val '0'
+./xmlchange  -file env_run.xml -id  STOP_N        -val '24'
+./xmlchange  -file env_run.xml -id  STOP_OPTION   -val 'nhours'
+#./xmlchange  -file env_run.xml -id  REST_N        -val '6'
+./xmlchange  -file env_run.xml -id  REST_OPTION   -val never       # 'nhours' 'nmonths' 'nsteps' 'nyears' 
+./xmlchange  -file env_run.xml -id  DOUT_L_MS     -val 'FALSE'
+./xmlchange  -file env_run.xml -id  RUN_STARTDATE -val $run_start_date
+./xmlchange  -file env_run.xml -id  START_TOD     -val $start_tod
+./xmlchange  -file env_run.xml -id  DIN_LOC_ROOT  -val $DATADIR
+./xmlchange  -file env_run.xml -id  DOUT_S_ROOT   -val $ARCHDIR
+./xmlchange  -file env_run.xml -id  RUNDIR        -val $RUNDIR
+
+./xmlchange  -file env_run.xml -id  ATM_NCPL      -val '720'    
+
+cat <<EOF >! user_nl_cam
+
+&camexp
+npr_yz = 32,2,2,32
+prescribed_aero_model='bulk'
+/
+
+!&prof_inparm
+!profile_barrier = .true.
+!/
+
+&aerodep_flx_nl
+aerodep_flx_datapath           = '$DATADIR/atm/cam/chem/trop_mozart_aero/aero'
+aerodep_flx_file               = 'aerosoldep_rcp2.6_monthly_1849-2104_1.9x2.5_c100402.nc'
+/
+
+&prescribed_volcaero_nl
+prescribed_volcaero_datapath = '$DATADIR/atm/cam/volc'
+prescribed_volcaero_file     = 'CCSM4_volcanic_1850-2011_prototype1.nc'
+/
+
+&prescribed_aero_nl
+!!prescribed_aero_datapath = '/global/u1/h/hparish/ICs/aerosols'
+!!prescribed_aero_file     = '5x_aero_1.9x2.5_L26_1850-2020_c130627.nc'
+!!prescribed_aero_file     = '20x_aero_1.9x2.5_L26_1850-2020_c130627.nc'
+prescribed_aero_datapath = '$DATADIR/atm/cam/chem/trop_mozart_aero/aero'
+prescribed_aero_file     = 'aero_1.9x2.5_L26_1850-2020_c130627.nc'
+/
+
+&prescribed_ozone_nl
+prescribed_ozone_datapath = '$DATADIR/atm/cam/ozone'
+!prescribed_ozone_file     = 'ozone_1.9x2.5_L66_2005-2099_c130607.nc'
+prescribed_ozone_file     = 'ozone_1.9x2.5_L26_1850-2015_rcp45_c101108.nc'
+/
+
+&solar_inparm
+!solar_data_file = '$DATADIR/atm/cam/solar/spectral_irradiance_Lean_1610-2140_ann_c100408.nc'
+solar_data_file = '$DATADIR/atm/cam/solar/spectral_irradiance_Lean_1950-2012_daily_Leap_c130227.nc'
+/
+
+&chem_surfvals_nl
+bndtvghg = '$DATADIR/atm/cam/ggas/ghg_hist_1765-2012_c130501.nc'
+
+ch4vmr = 1760.0e-9
+co2vmr = 367.0e-6
+f11vmr = 653.45e-12
+f12vmr = 535.0e-12
+n2ovmr = 316.0e-9
+/
+
+&cam_inparm
+phys_loadbalance = 2
+
+!iord = 5 
+!jord = 5 
+!kord = 5 
+
+!div24del2flag = 4 
+
+!nsplit   = 4 
+!nspltrac = 2 
+!nspltvrm = 2 
+
+!ncdata = '/global/u1/h/hparish/from_jerry/hp_interp_analyses/YOTC_interp_IC_files/1.9x2.5_L106_Sc1_20081015_YOTC.cam2.i.2008-10-15-43200.nc'
+!ncdata = '/global/u1/h/hparish/from_jerry/hp_interp_analyses/YOTC_interp_IC_files/1.9x2.5_L30_20081020_YOTC.cam2.i.2008-10-20-43200.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_jerry/hp_interp_analyses/YOTC_interp_IC_files/1.9x2.5_L30_20081015_YOTC.cam2.i.2008-10-15-43200.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L30_Sc1_20081014_12hr_YOTC.cam2.i.2008-10-14-43200.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L125_Sc1_20081014_12hr_YOTC.cam2.i.2008-10-14-43200.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L30_Sc1_20081010_YOTC.cam2.i.2008-10-10-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L30_Sc1_20081020_YOTC.cam2.i.2008-10-20-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L30_Sc1_20081025_YOTC.cam2.i.2008-10-25-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L30_Sc1_20081030_YOTC.cam2.i.2008-10-30-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L99_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L114_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L114_Sc1_20081020_YOTC.cam2.i.2008-10-20-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L119_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L123_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L128_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L141_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L153_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L114_Sc1_20090610_YOTC.cam2.i.2009-06-10-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L120_from_cesm_ic_file_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/4x5_L125_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L125_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L125_Sc1_20081020_YOTC.cam2.i.2008-10-20-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L45_mixedL30L125_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L253_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/1.9x2.5_L72_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+!ncdata = '/global/u1/h/hparish/ICs/from_mike_YOTC/YOTC_interp_ICs_files/0.9x1.25_L114_Sc1_20081015_YOTC.cam2.i.2008-10-15-00000.nc'
+
+dtime  = 120. 
+iradsw = 2 
+iradlw = 2
+!iradae = 4 
+
+empty_htapes = .true.
+fincl1 = 'TGCLDLWP:A','TGCLDIWP:A','PS:A','T:A','Q:A','RELHUM:A','FLUT:A','FSNTOA:A','FLNS:A','FSNS:A','FLNT:A','FSDS:A','FSNT:A','FSUTOA:A',
+         'SOLIN:A','LWCF:A','SWCF:A','CLOUD:A','CLDICE:A','CLDLIQ:A','CLDTOT:A','CLDHGH:A','CLDMED:A','CLDLOW:A','OMEGA:A',
+         'PRECT:A','U:A','V:A','LHFLX:A','SHFLX:A','CCN1:A','CCN2:A','CCN3:A','CCN4:A','CCN5:A','CCN6:A','SST:A','TS:A','PBLH:A',
+         'TMQ:A','QAP:I','TAP:I','QBP:I','TBP:I','CLDLIQAP:I','CLDLIQBP:I',
+         'Z3:A','CLDTOP:A','CLDBOT:A','PCONVB:A','PCONVT:A','FLDS:A','FLDSC:A',
+         'CLOUDTOP:A','TIMINGF:A',
+         'SPQRL:A','SPQRS:A','SPDT:A','SPDQ:A','SPDQC:A','SPDQI:A','SPMC:A','SPMCUP:A','SPMCDN:A','SPMCUUP:A','SPMCUDN:A','SPWW:A','SPBUOYA:A',
+         'SPQC:A','SPQI:A','SPQS:A','SPQG:A','SPQR:A','SPNC:A','SPNI:A','SPNS:A','SPNG:A','SPNR:A','SPQTFLX:A','SPUFLX:A','SPVFLX:A','SPTKE:A',
+         'SPTKES:A','SPQTFLXS:A','SPQPFLX:A','SPPFLX:A','SPQTLS:A','SPQTTR:A','SPQPTR:A','SPQPEVP:A','SPQPFALL:A','SPQPSRC:A','SPTLS:A'
+                   
+
+!fincl2 = 'CRM_UTEND:I','CRM_VTEND:I','CRM_QRAD:I','SPTLS:I','SPQTLS:I','BFLX:I'
+
+fincl2 = 'CRM_T:I','CRM_U:I','CRM_QRAD:I','CRM_W:I','CRM_QV:I','CRM_QC:I','CRM_QPC:I','CRM_QPI:I','CRM_PREC:I'
+fincl2lonlat = '270e:285e_35s:15s'
+
+nhtfrq = 5,3 
+mfilt  = 1,1
+/
+EOF
+
+cat <<EOF >! user_nl_clm
+&clmexp
+hist_empty_htapes = .true.
+hist_fincl1 = 'QSOIL:A', 'QVEGE:A', 'QVEGT:A', 'QIRRIG:A', 'FCEV:A', 'FCTR:A', 'FGEV:A', 'H2OCAN:A', 'H2OSOI:A', 'QDRIP:A', 'QINTR:A', 'QOVER:A', 
+              'SOILICE:A', 'SOILLIQ:A', 'TSA:A', 'Q2M:A', 'RH2M:A' 
+hist_nhtfrq = -2 
+hist_mfilt  = 6 
+/
+EOF
+
+cat <<EOF >! user_nl_cice
+stream_fldfilename = '$DATADIR/atm/cam/sst/sst_HadOIBl_bc_1x1_1850_2013_c140701.nc'
+EOF
+
+#------------------
+## configure
+#------------------
+
+config:
+cd $CASEROOT
+./cesm_setup
+./xmlchange -file env_build.xml -id EXEROOT -val $PTMP/$CASE/bld
+
+modify:
+cd $CASEROOT
+#if (-e $mymodscam) then
+#    ln -s $mymodscam/* SourceMods/src.cam
+#endif
+#------------------
+##  Interactively build the model
+#------------------
+
+build:
+cd $CASEROOT
+./$CASE.build
+
+cd  $CASEROOT
+sed -i 's/^#SBATCH --time=.*/#SBATCH --time='$run_time' /' $CASE.run
+sed -i 's/^#SBATCH -p .*/#SBATCH -p '$queue' /' $CASE.run
+sed -i 's/^#SBATCH --qos .*/#SBATCH --qos '$priority' /' $CASE.run
+#sed -i 's/^#SBATCH -A .*/#SBATCH -A '$account' /' $CASE.run
+
+cd  $CASEROOT
+set bld_cmp   = `grep BUILD_COMPLETE env_build.xml`
+set split_str = `echo $bld_cmp | awk '{split($0,a,"="); print a[3]}'`
+set t_or_f    = `echo $split_str | cut -c 2-5`
+
+if ( $t_or_f == "TRUE" ) then
+    sbatch $CASE.run
+    echo '-------------------------------------------------'
+    echo '----Build and compile is GOOD, job submitted!----'
+else
+    set t_or_f = `echo $split_str | cut -c 2-6`
+    echo 'Build not complete, BUILD_COMPLETE is:' $t_or_f
+endif
+
+# NOTE for documenting this case
+cat <<EOF >> $CASEROOT/README.case
+
+---------------------------------
+USER NOTE (by hparish)
+---------------------------------
+
+--- Modifications: hparish tests the high vertical res (L253) in a new setup with 100x1CRM with crm_dx=35m following 
+Matt's email that shows the vertical resolution of 5m is critical to yield LWP > 50g/m2.   
+
+EOF

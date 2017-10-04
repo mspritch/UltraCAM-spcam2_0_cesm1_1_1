@@ -1,0 +1,36 @@
+================================================================================
+ SVN $Id: ChangeLog 42030 2012-11-16 20:26:33Z cacraig@ucar.edu $
+ SVN $URL: https://svn-ccsm-models.cgd.ucar.edu/drv/seq_mct/branch_tags/seqinst_tags/seqinst04_cesm1_1_0_n01_drvseq4_2_08/ChangeLog $
+================================================================================
+Information on changes to cpl7
+================================================================================
+Originator: Cheryl Craig
+Date: 16 Nov 2012
+Model: cpl7
+Version: seqinst04_cesm1_1_0_n01_drvseq4_2_08
+One-line summary: merge to CESM1_1_0 release tag
+
+   svn merge https://svn-ccsm-models.cgd.ucar.edu/drv/seq_mct/trunk_tags/drvseq4_2_07  https://svn-ccsm-models.cgd.ucar.edu/drv/seq_mct/branch_tags/cesm1_1_0_rel_tags/cesm1_1_0_n01_drvseq4_2_08
+
+
+================================================================================
+
+================================================================================
+Originator: tcraig
+Date: 02 Nov 2012
+Model: cpl7
+Version: cesm1_1_0_n01_drvseq4_2_08
+One-line summary: fix scm namelist
+
+  svn merge $SVNREPO/drv/seq_mct/trunk_tags/drvseq4_2_09 $SVNREPO/drv/seq_mct/trunk_tags/drvseq4_2_10
+
+M       bld/namelist_files/namelist_definition_drv.xml
+
+================================================================================
+Originator: tcraig
+Date: 02 Nov 2012
+Model: cpl7
+Version: cesm1_1_0_n00_drvseq4_2_08
+One-line summary: create branch
+
+================================================================================

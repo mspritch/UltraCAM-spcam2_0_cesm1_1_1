@@ -1,0 +1,10 @@
+--------------------------------------------------------------------------------
+                            CESM1.1 README
+
+--------------------------------------------------------------------------------
+IMPORTANT INFORMATION ABOUT SCIENTIFIC VALIDATION - THERE
+ARE NO SCIENTIFICALLY VALIDATED COMPONENT SETS IN CESM1.1
+
+For both a quick start and details of creating and running a CESM model case
+see the CESM1.1 User's Guide at http://www.cesm.ucar.edu/models/cesm1.1
+-------------------------------------------------------------------------------- 

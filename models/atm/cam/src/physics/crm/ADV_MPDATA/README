@@ -1,0 +1,11 @@
+This folder contains the files for the MPDATA advectoin scheme.  05/06/2015.
+
+0) Only one of MPDATA or UM5 schemes can be selected for a simulation.
+
+1) To make the files inside this folder visible to the compiler, make sure the following line exists in models/atm/cam/bld/configure:
+print $fh "$srcdir/atm/cam/src/physics/crm/ADV_MPDATA\n";
+
+2) If MPDATA is chosen as the advection scheme, the line associated with UM5 must be commented out in the same file. Like following:
+#        print $fh "$srcdir/atm/cam/src/physics/crm/ADV_UM5\n";
+
+Questions contact: h.parish@uci.edu 
