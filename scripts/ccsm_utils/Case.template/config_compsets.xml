@@ -1308,6 +1308,19 @@ TODO: for AMIP, want to have another variable that crashes if end of dataset is 
          CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -use_SPCAM -crm_nx 128 -crm_ny 1 -crm_nz 120 -nlev 120 -crm_dx 250 -crm_dt 5 -SPCAM_microp_scheme m2005" 
          CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
 />
+
+<compset NAME="F_2000_SPCAM_m2005_SP" SHORTNAME="FSPCAMm2"
+         DESC="SPCAM for m2005 case like UP"
+         CAM_CONFIG_OPTS="-rad rrtmg -chem none -use_SPCAM -crm_nx 32 -crm_ny 1 -crm_nz 30 -nlev 30 -crm_dx 250 -crm_dt 1 -SPCAM_microp_scheme m2005" 
+         CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
+/>
+
+<compset NAME="F_2000_SPCAM_m2005_UP" SHORTNAME="FUPCAMm"
+         DESC="UPCAM for m2005 case"
+         CAM_CONFIG_OPTS="-rad rrtmg -chem none -phys cam5 -use_SPCAM -crm_nx 32 -crm_ny 1 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 0.750D0 -SPCAM_microp_scheme m2005" 
+         CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
+/>
+
 <!-- !!HP added this use_case to test SPCAM at AMIP configuration. in CAM_NML_USE_CASE -->
 <compset NAME="F_AMIP_SPCAM_m2005" SHORTNAME="FSPCAMm"
          DESC="SPCAM for m2005 case"
