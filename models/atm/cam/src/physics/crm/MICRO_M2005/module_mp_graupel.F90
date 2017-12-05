@@ -2471,6 +2471,9 @@ END SUBROUTINE MP_GRAUPEL
             DUM2 = (DUM2-NC3D(K))/DT
             DUM2 = MAX(0.,DUM2)
             NC3DTEN(K) = NC3DTEN(K)+DUM2
+            IF(K .eq. 100) THEN                                                     
+                write(6, *) 'crterai checking if module_mp_graupel.F90 gets used NC3DTEN = ', DUM2        
+            ENDIF
 #if (defined CRM && defined MODAL_AERO)
             ELSE if (IACT.EQ.3) then
               INES = 0 
