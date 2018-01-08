@@ -221,10 +221,12 @@ subroutine modal_aero_wateruptake_dr(state, pbuf)
             specdens_1(m)  = specdens
             spechygro_1    = spechygro
          end if
-         if (spechygro < 0._r8)
+         
+         if (spechygro < 0._r8) then
             write(iulog,*) 'l=', l, ' nmode=', m, ' spechygro =', spechygro
          end if
-         if (specdens < 0._r8)
+        
+         if (specdens < 0._r8) then
             write(iulog,*) 'l=', l, ' nmode=', m, ' specdens =', specdens
          end if
 
