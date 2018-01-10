@@ -1461,6 +1461,9 @@ icc_loop: &
 		tmp_hygro = 0.0
 		do l = 1, ncomp_aer(n)
 		    tmpa = chem_tmpa(k,icc,jcls,ipp,massptr_aer(l,m,n,ai_phase))
+                    if (tmpa .lt. 0._r8) then
+                       write(iulog,*)'In ecpp_modal_wetscav tmpa=',tmpa
+                    end if 
 		    dry_mass = dry_mass + tmpa
 		    dry_volu = dry_volu + tmpa/dens_aer(l,n)
 		    tmp_hygro = tmp_hygro + (tmpa/dens_aer(l,n))*hygro_aer(l,n)
@@ -1483,7 +1486,9 @@ icc_loop: &
 		else
 		    dry_diam = (dry_volu/(tmp_num*piover6))**onethird
 		end if
-
+                if (dry_volu .lt. 0._r8) then
+                    write(iulog,*)'In ecpp_modal_wetscav dry_volu=',dry_volu
+                end if
 !               calc volume-mean wet diameter
 		tmp_hygro = tmp_hygro*fact_mass/dry_volu
 		tmp_rh = max( 0.0_r8, min( 0.99_r8, rh_sub2(k,icc,jcls,ipp) ) )
@@ -1494,6 +1499,9 @@ icc_loop: &
                 hygro_mak(1) = tmp_hygro
                 s_mak(1) = tmp_rh
                 rwet_out_mak(1) = tmp_rwet
+                if (tmp_hygro .lt. 0._r8) then
+                   write(iulog,*)'In ecpp_modal_wetscav hygro =',tmp_hygro
+                end if
 !             call modal_aero_kohler( tmp_rdry, tmp_hygro, tmp_rh, tmp_rwet, 1, 1 )
                 call modal_aero_kohler( rdry_in_mak, hygro_mak, s_mak, rwet_out_mak, 1, 1)
                 tmp_rwet = rwet_out_mak(1)
