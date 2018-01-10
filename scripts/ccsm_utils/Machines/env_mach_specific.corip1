@@ -39,7 +39,7 @@ if ( $MPILIB == "mpi-serial" ) then
   setenv MKL -mkl=sequential
 endif 
 if ( $MPILIB != "mpi-serial" ) then 
-  module load cray-netcdf-hdf5parallel/4.4.0 
+  module load cray-netcdf-hdf5parallel/4.4.1 
   module load cray-hdf5-parallel/1.8.16
   module load cray-parallel-netcdf/1.7.0
   setenv MKL -mkl
