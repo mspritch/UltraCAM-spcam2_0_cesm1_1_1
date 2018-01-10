@@ -11,6 +11,7 @@ module ecpp_modal_wetscav
    use shr_kind_mod, only: r8 => shr_kind_r8
    use perf_mod
    use abortutils,   only: endrun
+   use cam_logfile, only: iulog
 
    implicit none
 
@@ -1349,7 +1350,6 @@ main_kloop_aa: &
 
 !	use module_ecpp_util, only:  ecpp_error_fatal, ecpp_message,   &
 !	                             parampollu_1clm_set_opts
-
 	implicit none
 
 !   arguments
