@@ -222,16 +222,22 @@ subroutine modal_aero_wateruptake_dr(state, pbuf)
             spechygro_1    = spechygro
          end if
          
+         ! CRT 2018-01-10: log error message to locate when hygro goes negative
          if (spechygro < 0._r8) then
             write(iulog,*) 'l=', l, ' nmode=', m, ' spechygro =', spechygro
          end if
-        
+         ! CRT 2018-01-10: log error message to locate when hygro goes negative
          if (specdens < 0._r8) then
             write(iulog,*) 'l=', l, ' nmode=', m, ' specdens =', specdens
          end if
 
+
          do k = 1, pver
             do i = 1, ncol
+               ! CRT 2018-01-10: log error message to locate when hygro goes negative
+               if (raero(i,k) < 0._r8) then
+                  write(iulog,*) 'l=', l, ' nmode=', m, ' raero =', raero(i,k)
+               end if
                duma          = raer(i,k)
                maer(i,k,m)   = maer(i,k,m) + duma
                dumb          = duma/specdens
@@ -240,6 +246,7 @@ subroutine modal_aero_wateruptake_dr(state, pbuf)
             end do
          end do
       end do
+      
 
       alnsg = log(sigmag)
 
@@ -250,6 +257,10 @@ subroutine modal_aero_wateruptake_dr(state, pbuf)
                hygro(i,k,m) = hygro(i,k,m)/dryvolmr(i,k)
             else
                hygro(i,k,m) = spechygro_1
+            end if
+            ! CRT 2018-01-10: log error message to locate when hygro goes negative
+            if (hygro(i,k,m) < 0._r8) then
+               write(iulog,*) 'i=', i, ' k=', k, ' nmode=', m, ' hygro=', hygro(i,k,m)
             end if
 
             ! dry aerosol properties
