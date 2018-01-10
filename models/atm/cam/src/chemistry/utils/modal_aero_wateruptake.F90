@@ -223,20 +223,20 @@ subroutine modal_aero_wateruptake_dr(state, pbuf)
          end if
          
          ! CRT 2018-01-10: log error message to locate when hygro goes negative
-         if (spechygro < 0._r8) then
-            write(iulog,*) 'l=', l, ' nmode=', m, ' spechygro =', spechygro
+         if (spechygro .lt. 0._r8) then
+            write(iulog,*)'l=', l, ' nmode=', m, ' spechygro =', spechygro
          end if
          ! CRT 2018-01-10: log error message to locate when hygro goes negative
-         if (specdens < 0._r8) then
-            write(iulog,*) 'l=', l, ' nmode=', m, ' specdens =', specdens
+         if (specdens .lt. 0._r8) then
+            write(iulog,*)'l=', l, ' nmode=', m, ' specdens =', specdens
          end if
 
 
          do k = 1, pver
             do i = 1, ncol
                ! CRT 2018-01-10: log error message to locate when hygro goes negative
-               if (raer(i,k) < 0._r8) then
-                  write(iulog,*) 'l=', l, ' nmode=', m, ' raero =', raer(i,k)
+               if (raer(i,k) .lt. 0._r8) then
+                  write(iulog,*)'l=', l, ' nmode=', m, ' raer =', raer(i,k)
                end if
                duma          = raer(i,k)
                maer(i,k,m)   = maer(i,k,m) + duma
@@ -259,8 +259,8 @@ subroutine modal_aero_wateruptake_dr(state, pbuf)
                hygro(i,k,m) = spechygro_1
             end if
             ! CRT 2018-01-10: log error message to locate when hygro goes negative
-            if (hygro(i,k,m) < 0._r8) then
-               write(iulog,*) 'i=', i, ' k=', k, ' nmode=', m, ' hygro=', hygro(i,k,m)
+            if (hygro(i,k,m) .lt. 0._r8) then
+               write(iulog,*)'L263: i=', i, ' k=', k, ' nmode=', m, ' hygro=', hygro(i,k,m)
             end if
 
             ! dry aerosol properties
@@ -484,7 +484,9 @@ subroutine modal_aero_wateruptake_sub( &
 
       do k = 1, pver
          do i = 1, ncol
-
+            if (hygro(i,k,m) .lt. 0.0_r8) then
+               write(iulog,*)'In modal_aero_wateruptake_sub hygro =', hygro(i,k,m)
+            end if
             ! compute wet radius for each mode
             call modal_aero_kohler(dryrad(i:,k,m), hygro(i:,k,m), rh(i:,k), wetrad(i:,k,m), 1, 1)
 
@@ -570,7 +572,9 @@ end subroutine modal_aero_wateruptake_sub
            rdry(i) = rdry_in(i)*1.0e6_r8   ! convert (m) to (microns)
            vol(i) = rdry(i)**3          ! vol is r**3, not volume
            b = vol(i)*hygro(i)
-
+           if (hygro(i).lt.0._r8) then
+              write(iulog,*)'modal_aero L 574: hygro=', hygro(i)
+           end if
 !          quartic
            ss=min(s(i),1._r8-eps)
            ss=max(ss,1.e-10_r8)
