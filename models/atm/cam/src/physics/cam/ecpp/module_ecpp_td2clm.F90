@@ -1132,7 +1132,8 @@ main_trans_k_loop:   &
 		chem_sub_new(k,icc,jcls,l) =   &
 		    chem_bar(k,l)*chem_bar_iccfactor(icc,l)
                 if (chem_sub_new(k,icc,jcls,l) .lt. 0._r8) then
-                    write(iulog,*)'In module_ecpp_td2clm.F90 after chem_bar*chem_bar_icc chem_sub_new=',chem_sub_new(k,icc,jcls,l),'k,icc,jcls,lc',k,icc,jcls,l,' chem_bar =',chem_bar(k,l),'chem_bar_iccfactor =',chem_bar_iccfactor(icc,l)
+                    write(iulog,*)'In module_ecpp_td2clm.F90 after chem_sub_new =',chem_sub_new(k,icc,jcls,l)
+                    write(iulog,*)'Chem_bar =',chem_bar(k,l),' iccfactor =',chem_bar_iccfactor(icc,l)
                 end if
 	    end do
 	    cycle main_trans_k_loop
@@ -1516,12 +1517,12 @@ vert_topqu_iccy_loop:   &
 !   new mixing ratio
 	    chem_sub_new(k,icc,jcls,la) = tmp_ardzqa/ardz_cen_new(k,icc,jcls)
             if (chem_sub_new(k,icc,jcls,la) .lt. 0._r8) then
-                write(iulog,*)'In module_ecpp_td2clm.F90 after tmp_ardzqA chem_sub_new=',chem_sub_new(k,icc,jcls,la),'k,icc,jcls,lc',k,icc,jcls,la
+                write(iulog,*)'In module_ecpp_td2clm aftr tmp_ardzqA chem_sub_new=',chem_sub_new(k,icc,jcls,la),' k,icc,jcls,la ',k,icc,jcls,la
             end if
 	    if (lc > 0)   &
 	    chem_sub_new(k,icc,jcls,lc) = tmp_ardzqc/ardz_cen_new(k,icc,jcls)
             if (chem_sub_new(k,icc,jcls,lc) .lt. 0._r8) then
-                write(iulog,*)'In module_ecpp_td2clm.F90 after tmp_ardzqC chem_sub_new=',chem_sub_new(k,icc,jcls,lc),'k,icc,jcls,lc',k,icc,jcls,lc
+                write(iulog,*)'In module_ecpp_td2clm aftr tmp_ardzqC chem_sub_new=',chem_sub_new(k,icc,jcls,lc),' k,icc,jcls,lc ',k,icc,jcls,lc
             end if
 !   change in mixing ratio (*fraction) from activation/resuspension
             del_activate3d(k,icc,jcls,la) =  del_activate3d(k,icc,jcls,la)+tmp_del_ardzqa_act/rhodz_cen(k)
