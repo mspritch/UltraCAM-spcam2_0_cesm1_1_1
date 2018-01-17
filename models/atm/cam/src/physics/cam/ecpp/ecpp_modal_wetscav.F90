@@ -280,6 +280,9 @@ contains
 	do jcls = 1, ncls_use
 	do icc = 1, 2
 	do k = kts, ktecen
+            if (chem_sub_new(k,icc,jcls,l) .lt. 0._r8) then
+                write(iulog,*)'In ecpp_modal_wetscav chem_sub_new(',k,',',icc,',',jcls,',',l,',',')=',chem_sub_new(k,icc,jcls,l)
+            end if
 	    chem_tmpa(k,icc,jcls,1:2,l) = chem_sub_new(k,icc,jcls,l)
 	end do
 	end do
