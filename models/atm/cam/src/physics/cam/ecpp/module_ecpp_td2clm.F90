@@ -1613,7 +1613,7 @@ vert_topqu_iccy_loop:   &
 
         if (wetscav_onoff_ecpp >= 100) then
         call t_startf('ecpp_wetscav')
-        if (chem_sub_new .lt. 0._r8) then
+        if (chem_sub_new(50,1,1,6) .lt. 0._r8) then
             write(iulog,*)'In module_ecpp_td2clm.F90 b4 wetscav_2 chem_sub_new(50,1,1,6)=',chem_sub_new(50,1,1,6)
         end if
 !        write(*,'(a,3i8)') 'main integ calling wetscav_2', ktau, ktau_pp, itstep_sub
