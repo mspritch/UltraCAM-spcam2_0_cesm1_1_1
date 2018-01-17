@@ -6,6 +6,7 @@
         use perf_mod
         use abortutils, only: endrun
         use physics_buffer, only : physics_buffer_desc
+        use cam_logfile, only: iulog
 
 	implicit none
 
@@ -1130,6 +1131,9 @@ main_trans_k_loop:   &
 	    do l = param_first_ecpp, num_chem_ecpp
 		chem_sub_new(k,icc,jcls,l) =   &
 		    chem_bar(k,l)*chem_bar_iccfactor(icc,l)
+                if (chem_sub_new(k,icc,jcls,l) .lt. 0._r8) then
+                    write(iulog,*)'In module_ecpp_td2clm.F90 after chem_bar*chem_bar_icc chem_sub_new=',chem_sub_new(k,icc,jcls,l),'k,icc,jcls,lc',k,icc,jcls,l,' chem_bar =',chem_bar(k,l),'chem_bar_iccfactor =',chem_bar_iccfactor(icc,l)
+                end if
 	    end do
 	    cycle main_trans_k_loop
 	end if
@@ -1511,14 +1515,19 @@ vert_topqu_iccy_loop:   &
 
 !   new mixing ratio
 	    chem_sub_new(k,icc,jcls,la) = tmp_ardzqa/ardz_cen_new(k,icc,jcls)
+            if (chem_sub_new(k,icc,jcls,la) .lt. 0._r8) then
+                write(iulog,*)'In module_ecpp_td2clm.F90 after tmp_ardzqA chem_sub_new=',chem_sub_new(k,icc,jcls,la),'k,icc,jcls,lc',k,icc,jcls,la
+            end if
 	    if (lc > 0)   &
 	    chem_sub_new(k,icc,jcls,lc) = tmp_ardzqc/ardz_cen_new(k,icc,jcls)
-
+            if (chem_sub_new(k,icc,jcls,lc) .lt. 0._r8) then
+                write(iulog,*)'In module_ecpp_td2clm.F90 after tmp_ardzqC chem_sub_new=',chem_sub_new(k,icc,jcls,lc),'k,icc,jcls,lc',k,icc,jcls,lc
+            end if
 !   change in mixing ratio (*fraction) from activation/resuspension
             del_activate3d(k,icc,jcls,la) =  del_activate3d(k,icc,jcls,la)+tmp_del_ardzqa_act/rhodz_cen(k)
             if (lc > 0)   &
             del_activate3d(k,icc,jcls,lc) =  del_activate3d(k,icc,jcls,lc)+tmp_del_ardzqc_act/rhodz_cen(k)
-
+            
 	end do main_trans_la_loop
 
 	end do main_trans_k_loop
@@ -1604,6 +1613,9 @@ vert_topqu_iccy_loop:   &
 
         if (wetscav_onoff_ecpp >= 100) then
         call t_startf('ecpp_wetscav')
+        if (chem_sub_new .lt. 0._r8) then
+            write(iulog,*)'In module_ecpp_td2clm.F90 b4 wetscav_2 chem_sub_new(50,1,1,6)=',chem_sub_new(50,1,1,6)
+        end if
 !        write(*,'(a,3i8)') 'main integ calling wetscav_2', ktau, ktau_pp, itstep_sub
         call parampollu_tdx_wetscav_2(                             &
                 ktau, dtstep, ktau_pp, itstep_sub, dtstep_sub,     &
