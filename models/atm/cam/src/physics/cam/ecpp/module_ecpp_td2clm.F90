@@ -1132,10 +1132,10 @@ main_trans_k_loop:   &
 	    do l = param_first_ecpp, num_chem_ecpp
 		chem_sub_new(k,icc,jcls,l) =   &
 		    chem_bar(k,l)*chem_bar_iccfactor(icc,l)
-!                if (chem_sub_new(k,icc,jcls,l) < 0.0) then
-!                    write(iulog,*)'In module_ecpp_td2clm.F90 after chem_sub_new =',chem_sub_new(k,icc,jcls,l)
-!                    write(iulog,*)'Chem_bar =',chem_bar(k,l),' iccfactor =',chem_bar_iccfactor(icc,l)
-!                end if
+                if (chem_sub_new(k,icc,jcls,l) < 0.0) then
+                    write(iulog,*)'In module_ecpp_td2clm.F90 after chem_sub_new =',chem_sub_new(k,icc,jcls,l)
+                    write(iulog,*)'Chem_bar =',chem_bar(k,l),' iccfactor =',chem_bar_iccfactor(icc,l)
+                end if
 	    end do
 	    cycle main_trans_k_loop
 	end if
@@ -1170,7 +1170,7 @@ main_trans_la_loop:   &
 
 	    tmp_ardz   = ardz_cen_old(k,icc,jcls)
 	    tmp_ardzqa = chem_sub_old(k,icc,jcls,la)*tmp_ardz
-            if (tmp_ardzqa < -999999999.0) then
+            if (tmp_ardzqa < -99999.0) then
                 write(iulog,*)'Initial neg. tmp_ardzqa =',tmp_ardzqa
             end if
 	    tmp_ardzqc = 0.0
@@ -1182,7 +1182,7 @@ main_trans_la_loop:   &
 	    if (tmp_del_ardz < 0.0) then
 		tmp_ardz   = tmp_ardz   + tmp_del_ardz
 		tmp_ardzqa = tmp_ardzqa + chem_sub_old(k,icc,jcls,la)*tmp_del_ardz
-                if (tmp_ardzqa < -999999999.0) then
+                if (tmp_ardzqa < -99999.0) then
                     write(iulog,*)'After detrainment loss tmp_ardzqa =',tmp_ardzqa
                 end if
 		tmphoriz(k,jcls,la) = tmphoriz(k,jcls,la)    &
@@ -1281,7 +1281,7 @@ entrain_iccy_loop:   &
 		end if
  
 		tmp_ardzqa = tmp_ardzqa + tmp_del_ardzqa
-                if (tmp_ardzqa < -999999999.0) then
+                if (tmp_ardzqa < -99999.0) then
                     write(iulog,*)'After entrainment tmp_ardzqa =',tmp_ardzqa
                 end if 
 		tmp_ardzqc = tmp_ardzqc + tmp_del_ardzqc
@@ -1375,7 +1375,7 @@ vert_botqu_iccy_loop:   &
 		    end if
 
 		    tmp_ardzqa = tmp_ardzqa + tmp_del_ardzqa
-                    if (tmp_ardzqa < -999999999.0) then
+                    if (tmp_ardzqa < -99999.0) then
                         write(iulog,*)'In quiesc after activation of (la+lc) tmp_ardzqa =',tmp_ardzqa
                     end if
 		    tmp_ardzqc = tmp_ardzqc + tmp_del_ardzqc
@@ -1470,7 +1470,7 @@ vert_topqu_iccy_loop:   &
 
 		    tmp_ardzqa = tmp_ardzqa + tmp_del_ardzqa
 		    tmp_ardzqc = tmp_ardzqc + tmp_del_ardzqc
-                    if (tmp_ardzqa < -999999999.0) then
+                    if (tmp_ardzqa < -99999.0) then
                         write(iulog,*)'In quiesc after activation of (la+lc) pt2 tmp_ardzqa =',tmp_ardzqa
                     end if
 ! change from activation/resuspension
@@ -1484,13 +1484,13 @@ vert_topqu_iccy_loop:   &
 			'vert_topqu gggg - icc,iupdn,ido', iccy, iupdn, ido_actres_tmp
 		end do vert_topqu_iccy_loop
 		end do vert_topqu_iupdn_loop
-!            if (tmp_ardzqa < 0.0)  &
-!               write(iulog,*)'After quiescent class tmp_ardzqa=',tmp_ardzqa
+            if (tmp_ardzqa < -99999.0)  &
+               write(iulog,*)'After quiescent class tmp_ardzqa=',tmp_ardzqa
 
 	    else
 !    Write to log before lower bound transport
-!            if (tmp_ardzqa < 0.0)  &
-!               write(iulog,*)'Before vert trnspt at lower B tmp_ardzqa=',tmp_ardzqa
+            if (tmp_ardzqa < -99999.0)  &
+               write(iulog,*)'Before vert trnspt at lower B tmp_ardzqa=',tmp_ardzqa
 !   up/dndraft class -- add/subtract vertical transport at lower boundary 
 !   no activation/resuspension here as the vertical transport within up/dndrafts
 !      is clear-->clear or cloudy-->cloudy.   (The within up/dndraft
