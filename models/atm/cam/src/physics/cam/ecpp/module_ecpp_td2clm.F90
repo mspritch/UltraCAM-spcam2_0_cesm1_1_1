@@ -1170,9 +1170,9 @@ main_trans_la_loop:   &
 
 	    tmp_ardz   = ardz_cen_old(k,icc,jcls)
 	    tmp_ardzqa = chem_sub_old(k,icc,jcls,la)*tmp_ardz
-            if (tmp_ardzqa < -99999.0) then
-                write(iulog,*)'Initial neg. tmp_ardzqa =',tmp_ardzqa
-            end if
+!            if (tmp_ardzqa < -99999.0) then
+!                write(iulog,*)'Initial neg. tmp_ardzqa =',tmp_ardzqa
+!            end if
 	    tmp_ardzqc = 0.0
 	    if (lc > 0)   &
 	    tmp_ardzqc = chem_sub_old(k,icc,jcls,lc)*tmp_ardz
@@ -1281,9 +1281,9 @@ entrain_iccy_loop:   &
 		end if
  
 		tmp_ardzqa = tmp_ardzqa + tmp_del_ardzqa
-                if (tmp_ardzqa < -99999.0) then
-                    write(iulog,*)'After entrainment tmp_ardzqa =',tmp_ardzqa
-                end if 
+!                if (tmp_ardzqa < -99999.0) then
+!                    write(iulog,*)'After entrainment tmp_ardzqa =',tmp_ardzqa
+!                end if 
 		tmp_ardzqc = tmp_ardzqc + tmp_del_ardzqc
 		tmphoriz(k,jcls,la) = tmphoriz(k,jcls,la) + tmp_del_ardzqa
 		if (lc > 0)   &
@@ -1375,9 +1375,9 @@ vert_botqu_iccy_loop:   &
 		    end if
 
 		    tmp_ardzqa = tmp_ardzqa + tmp_del_ardzqa
-                    if (tmp_ardzqa < -99999.0) then
-                        write(iulog,*)'In quiesc after activation of (la+lc) tmp_ardzqa =',tmp_ardzqa
-                    end if
+!                    if (tmp_ardzqa < -99999.0) then
+!                        write(iulog,*)'In quiesc after activation of (la+lc) tmp_ardzqa =',tmp_ardzqa
+!                    end if
 		    tmp_ardzqc = tmp_ardzqc + tmp_del_ardzqc
 		    if (icc == 1) then
 			tmpverta(k,jcls,la) = tmpverta(k,jcls,la) + tmp_del_ardzqa
@@ -1470,9 +1470,9 @@ vert_topqu_iccy_loop:   &
 
 		    tmp_ardzqa = tmp_ardzqa + tmp_del_ardzqa
 		    tmp_ardzqc = tmp_ardzqc + tmp_del_ardzqc
-                    if (tmp_ardzqa < -99999.0) then
-                        write(iulog,*)'In quiesc after activation of (la+lc) pt2 tmp_ardzqa =',tmp_ardzqa
-                    end if
+!                    if (tmp_ardzqa < -99999.0) then
+!                        write(iulog,*)'In quiesc after activation of (la+lc) pt2 tmp_ardzqa =',tmp_ardzqa
+!                    end if
 ! change from activation/resuspension
                     tmp_del_ardzqa_act = tmp_del_ardzqa_act + (tmp_del_ardzqa - tmp_qyla*tmp_del_ardz)
                     if (lc > 0)    &
@@ -1484,13 +1484,13 @@ vert_topqu_iccy_loop:   &
 			'vert_topqu gggg - icc,iupdn,ido', iccy, iupdn, ido_actres_tmp
 		end do vert_topqu_iccy_loop
 		end do vert_topqu_iupdn_loop
-            if (tmp_ardzqa < -99999.0)  &
-               write(iulog,*)'After quiescent class tmp_ardzqa=',tmp_ardzqa
+!            if (tmp_ardzqa < -99999.0)  &
+!               write(iulog,*)'After quiescent class tmp_ardzqa=',tmp_ardzqa
 
 	    else
 !    Write to log before lower bound transport
-            if (tmp_ardzqa < -99999.0)  &
-               write(iulog,*)'Before vert trnspt at lower B tmp_ardzqa=',tmp_ardzqa
+!            if (tmp_ardzqa < -99999.0)  &
+!               write(iulog,*)'Before vert trnspt at lower B tmp_ardzqa=',tmp_ardzqa
 !   up/dndraft class -- add/subtract vertical transport at lower boundary 
 !   no activation/resuspension here as the vertical transport within up/dndrafts
 !      is clear-->clear or cloudy-->cloudy.   (The within up/dndraft
@@ -1537,15 +1537,15 @@ vert_topqu_iccy_loop:   &
 
 !   new mixing ratio
 	    chem_sub_new(k,icc,jcls,la) = tmp_ardzqa/ardz_cen_new(k,icc,jcls)
-            if (chem_sub_new(k,icc,jcls,la) < -1.0) then
+            if (chem_sub_new(k,icc,jcls,la) < -0.00001) then
                write(iulog,*)'In ecpp_td2clm aftr ardzqA chem_sub_new=',chem_sub_new(k,icc,jcls,la)
                write(iulog,*)'      tmp_ardzqa =',tmp_ardzqa
                write(iulog,*)'      ardz_cen_new =',ardz_cen_new(k,icc,jcls)
                write(iulog,*)'   chem_sub_new set to 0.0'
             end if
 !   ensure that chem_sub_new does not go negative
-            if (chem_sub_new(k,icc,jcls,la) < -0.00001) then
-               chem_sub_new(k,icc,jcls,la) = 0.0
+            if (chem_sub_new(k,icc,jcls,la) < 0.0) then
+               chem_sub_new(k,icc,jcls,la) = 0.00000000000001
             end if
 	    if (lc > 0)   &
 	    chem_sub_new(k,icc,jcls,lc) = tmp_ardzqc/ardz_cen_new(k,icc,jcls)

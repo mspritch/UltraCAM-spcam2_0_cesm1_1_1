@@ -259,7 +259,7 @@ for mct, etc.
   <!-- 2013-10-24 Took out CRMSUBS and added FOLLOWINVERSION -->
   <!-- 2017-11-28 Kept it simple -->
   <!-- 2017-11-29 Took out DCRMACCEL -DSTRATOKILLER for SP version-->
-  <ADD_CPPDEFS> -DFORTRANUNDERSCORE -DNO_R16 -DCRMACCEL -DSTRATOKILLER </ADD_CPPDEFS>
+  <ADD_CPPDEFS> -DFORTRANUNDERSCORE -DNO_R16 </ADD_CPPDEFS>
   <ADD_CFLAGS compile_threaded="true"> -openmp </ADD_CFLAGS>
   <ADD_FFLAGS compile_threaded="true"> -openmp </ADD_FFLAGS>
   <ADD_LDFLAGS compile_threaded="true"> -openmp </ADD_LDFLAGS>
