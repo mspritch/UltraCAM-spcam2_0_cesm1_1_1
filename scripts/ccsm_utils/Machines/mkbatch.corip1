@@ -41,7 +41,7 @@ cat >! $file << EOF1
 #SBATCH -p $qname
 #SBATCH --license SCRATCH,project
 #SBATCH -C haswell 
-#SBATCH -A m2222 
+#SBATCH -A m2840 
 #SBATCH --qos=premium
 EOF1
 
@@ -93,7 +93,7 @@ cat >! $CASEROOT/${CASE}.l_archive << EOF1
 #SBATCH --error=lta%jodid.err
 #SBATCH -p regular
 #SBATCH -C haswell 
-#SBATCH -A m2222 
+#SBATCH -A m840 
 #SBATCH --qos=premium
 cd $CASEROOT 
 source ./Tools/ccsm_getenv || exit -1
