@@ -1584,7 +1584,7 @@ subroutine tphysac (ztodt,   cam_in,  &
     !===================================================                              
     if((Nudge_Model).and.(Nudge_ON)) then
       call nudging_timestep_tend(state,ptend)
-      call physics_update(state,ptend,ztodt,tend)
+      call physics_update(state,tend,ptend,ztodt)
     endif
 
 

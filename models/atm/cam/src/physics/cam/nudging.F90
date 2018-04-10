@@ -498,7 +498,7 @@ contains
    use dycore        ,only: dycore_is
    use dyn_grid      ,only: get_horiz_grid_dim_d
    use phys_grid     ,only: get_rlat_p,get_rlon_p,get_ncols_p
-   use cam_history   ,only: addfld
+   use cam_history   ,only: addfld,phys_decomp
    use shr_const_mod ,only: SHR_CONST_PI
 
    ! Local values
@@ -566,10 +566,10 @@ contains
 
    ! Register output fields with the cam history module
    !-----------------------------------------------------
-   call addfld('Nudge_U',(/ 'lev' /),'A','m/s/s'  ,'U Nudging Tendency')
-   call addfld('Nudge_V',(/ 'lev' /),'A','m/s/s'  ,'V Nudging Tendency')
-   call addfld('Nudge_T',(/ 'lev' /),'A','cp*K/s' ,'T Nudging Tendency')
-   call addfld('Nudge_Q',(/ 'lev' /),'A','kg/kg/s','Q Nudging Tendency')
+   call addfld('Nudge_U','m/s/s'  ,pver,'A','U Nudging Tendency',phys_decomp)
+   call addfld('Nudge_V','m/s/s'  ,pver,'A','V Nudging Tendency',phys_decomp)
+   call addfld('Nudge_T','cp*K/s' ,pver,'A','T Nudging Tendency',phys_decomp)
+   call addfld('Nudge_Q','kg/kg/s',pver,'A','Q Nudging Tendency',phys_decomp)
 
    !-----------------------------------------
    ! Values initialized only by masterproc
@@ -1071,7 +1071,10 @@ contains
    call cnst_get_ind('Q',indw)
    lq(:)   =.false.
    lq(indw)=.true.
-   call physics_ptend_init(phys_tend,phys_state%psetcols,'nudging',lu=.true.,lv=.true.,ls=.true.,lq=lq)
+   !call physics_ptend_init(phys_tend,phys_state%psetcols,'nudging',lu=.true.,lv=.true.,ls=.true.,lq=lq)
+   call physics_ptend_init(phys_tend)
+   ! phys_tend%psetcols=phys_state%psetcols
+   ! phys_tend%name='nudging'
 
    if(Nudge_ON) then
      lchnk=phys_state%lchnk
