@@ -302,6 +302,10 @@ contains
    !---------------
    integer ierr,unitn
 
+   !  Debugging
+   write(iulog,*) 'NUDGING_READNL worked'
+
+   
    namelist /nudging_nl/ Nudge_Model,Nudge_Path,                       &
                          Nudge_File_Template,Nudge_Times_Per_Day,      &
                          Model_Times_Per_Day,                          &
@@ -515,6 +519,10 @@ contains
    real(r8) Val1_0,Val2_0,Val3_0,Val4_0
    real(r8) Val1_n,Val2_n,Val3_n,Val4_n
 
+   !  Debugging
+   write(iulog,*) 'NUDGING_INIT worked'
+
+
    ! Allocate Space for Nudging data arrays
    !-----------------------------------------
    allocate(Target_U(pcols,pver,begchunk:endchunk),stat=istat)
@@ -663,8 +671,16 @@ contains
      lat0=   0.
      latn= -90.-Nudge_Hwin_lat0
 
+     if (Nudge_Hwin_lonDelta <0.00001) then
+        write(iulog,*) 'NUDGING WARNING DIVIDE BY ZERO'
+     endif
+     if (Nudge_Hwin_latDelta <0.00001) then
+        write(iulog,*) 'NUDGING WARNING DIVIDE BY ZERO'
+     endif
+
      Nudge_Hwin_lonWidthH=Nudge_Hwin_lonWidth/2.
      Nudge_Hwin_latWidthH=Nudge_Hwin_latWidth/2.
+     
 
      Val1_p=(1.+tanh((Nudge_Hwin_lonWidthH+lonp)/Nudge_Hwin_lonDelta))/2.
      Val2_p=(1.+tanh((Nudge_Hwin_lonWidthH-lonp)/Nudge_Hwin_lonDelta))/2.
@@ -780,6 +796,13 @@ contains
    call mpibcast(Nudge_slat       , 1, mpiint, 0, mpicom)
 !DIAG
 #endif
+   ! For debugging purposes 
+   if (SHR_CONST_PI <0.00001) then
+      write(iulog,*) 'NUDGING WARNING DIVIDE BY ZERO'
+   endif
+   if (float(Nudge_Step) <0.00001) then
+      write(iulog,*) 'NUDGING WARNING DIVIDE BY ZERO'
+   endif
 
    ! Initialize Nudging Coeffcient profiles in local arrays
    ! Load zeros into nudging arrays
@@ -932,6 +955,10 @@ contains
      end do
    endif
 
+   !  Debugging
+   write(iulog,*) 'NUDGING_TIMESTEP_INIT worked'
+
+
    !----------------------------------------------------------------
    ! When past the NEXT time, Update Nudging Arrays and time indices
    !----------------------------------------------------------------
@@ -1002,6 +1029,8 @@ contains
    ! HERE Implement time dependence of Nudging Coefs HERE
    !-------------------------------------------------------
 
+   !  Debugging
+   write(iulog,*) 'NUDGING_TIMESTEP_INIT before updating'
 
 
    !---------------------------------------------------
