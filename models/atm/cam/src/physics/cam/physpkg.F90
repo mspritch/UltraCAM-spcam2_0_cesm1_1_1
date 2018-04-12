@@ -829,6 +829,10 @@ subroutine phys_init( phys_state, phys_tend, pbuf2d, cam_out )
     prec_sh_idx  = pbuf_get_index('PREC_SH')
     snow_sh_idx  = pbuf_get_index('SNOW_SH')
 
+    ! Initialize Nudging Parameters
+    !----------------------------------
+    if (Nudge_Model) call nudging_init
+
 end subroutine phys_init
 
   !
