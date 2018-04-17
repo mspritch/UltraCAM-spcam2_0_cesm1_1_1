@@ -7,6 +7,7 @@
         use abortutils, only: endrun
         use physics_buffer, only : physics_buffer_desc
         use cam_logfile, only: iulog
+        use spmd_utils,      only: masterproc
 
 	implicit none
 
@@ -4155,11 +4156,13 @@ acwxx1_k_loop: &
 	end if
 	if (msg /= ' ') call ecpp_error_fatal( lunout, msg )
 
-
-	if ((ktau==4) .and. (lun155 > 0)) then
-	write(lun155,'(/a,3i5)') 'aaa', ktau, ipass_check_adjust_inputs
-	write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls),icc=0,2),jcls=0,3)
-	end if
+        if ( masterproc ) then
+	    if ((ktau==4) .and. (lun155 > 0)) then
+	    write(lun155,'(/a,3i5)') 'aaa', ktau, ipass_check_adjust_inputs
+	    write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls), &
+            icc=0,2),jcls=0,3)
+	    end if
+        end if
 !   *** this is for testing 
 !       when iflag_ecpp_test_fixed_fcloud == 2/3/4/5, 
 !           set clear  fractions to 1.0/0.0/0.7/0.3
@@ -4336,11 +4339,13 @@ acwxx1_k_loop: &
 	    end do
 	end do
 
-
-	if ((ktau==4) .and. (lun155 > 0)) then
-	write(lun155,'(/a,3i5)') 'bbb', ktau, ipass_check_adjust_inputs
-	write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls),icc=0,2),jcls=0,3)
-	end if
+        if (masterproc) then
+	    if ((ktau==4) .and. (lun155 > 0)) then
+	    write(lun155,'(/a,3i5)') 'bbb', ktau, ipass_check_adjust_inputs
+	    write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls), &
+            icc=0,2),jcls=0,3)
+	    end if
+        end if
 !
 !   check updraft/dndraft
 !
@@ -4530,11 +4535,13 @@ acwxx1_k_loop: &
 !
 !   check/adjust quiescent transport-class
 !
-
-	if ((ktau==4) .and. (lun155 > 0)) then
-	write(lun155,'(/a,3i5)') 'ccc', ktau, ipass_check_adjust_inputs
-	write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls),icc=0,2),jcls=0,3)
-	end if
+        if (masterproc) then
+	    if ((ktau==4) .and. (lun155 > 0)) then
+	    write(lun155,'(/a,3i5)') 'ccc', ktau, ipass_check_adjust_inputs
+	    write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls), &
+            icc=0,2),jcls=0,3)
+	    end if
+        end if
 !   first set to zero any areas that are < afrac_cut
 	do k = kts, ktebnd
 	    do i = 1, 3
@@ -4671,10 +4678,13 @@ acwxx1_k_loop: &
 !   here ipass_check_adjust_inputs == 1
 !   skip over the special stuff for ipass_check_adjust_inputs == 2
 !-----------------------------------------------------
-	if ((ktau==4) .and. (lun155 > 0)) then
-	write(lun155,'(/a,3i5)') 'ddd', ktau, ipass_check_adjust_inputs
-	write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls),icc=0,2),jcls=0,3)
-	end if
+        if (masterproc) then
+            if ((ktau==4) .and. (lun155 > 0)) then
+	    write(lun155,'(/a,3i5)') 'ddd', ktau, ipass_check_adjust_inputs
+	    write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls), &
+            icc=0,2),jcls=0,3)
+	    end if
+        end if
 	goto 30000
 
 
@@ -4958,11 +4968,13 @@ acwxx1_k_loop: &
 	end do
 	end if ! (lun63 > 0)
 
-
-	if ((ktau==4) .and. (lun155 > 0)) then
-	write(lun155,'(/a,3i5)') 'eee', ktau, ipass_check_adjust_inputs
-	write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls),icc=0,2),jcls=0,3)
-	end if
+        if (masterproc) then
+	    if ((ktau==4) .and. (lun155 > 0)) then
+	    write(lun155,'(/a,3i5)') 'eee', ktau, ipass_check_adjust_inputs
+	    write(lun155,'(3(i5,i3,1pe16.8))') ((jcls,icc,acen_tavg_use(26,icc,jcls), &
+            icc=0,2),jcls=0,3)
+	    end if
+        end if
 
 	return
 	end subroutine parampollu_check_adjust_inputs
