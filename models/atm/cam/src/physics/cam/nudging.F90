@@ -1106,6 +1106,13 @@ contains
    ! phys_tend%name='nudging'
 
    if(Nudge_ON) then
+
+     ! Make lx .TRUE. for all modified variables
+     phys_tend%lu = .TRUE.
+     phys_tend%lv = .TRUE.
+     phys_tend%ls = .TRUE.
+     phys_tend%lq(:) = .TRUE.
+
      lchnk=phys_state%lchnk
      ncol =phys_state%ncol
      phys_tend%u(:ncol,:pver)     =Nudge_Ustep(:ncol,:pver,lchnk)
