@@ -400,6 +400,7 @@ contains
    use vertical_diffusion,  only: vd_readnl
    use cam_history_support, only: fieldname_len, fieldname_lenp2
    use cam_diagnostics,     only: diag_readnl
+   use nudging,             only: nudging_readnl
 #if ( defined OFFLINE_DYN )
    use metdata,             only: metdata_readnl
 #endif
@@ -845,6 +846,7 @@ contains
    call cospsimulator_intr_readnl(nlfilename)
    call sat_hist_readnl(nlfilename, hfilename_spec, mfilt, fincl, nhtfrq, avgflag_pertape)
    call diag_readnl(nlfilename)
+   call nudging_readnl(nlfilename)
 #if (defined WACCM_PHYS)
    call waccm_forcing_readnl(nlfilename)
 #endif
