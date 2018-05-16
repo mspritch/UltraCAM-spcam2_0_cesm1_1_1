@@ -832,7 +832,8 @@ subroutine phys_init( phys_state, phys_tend, pbuf2d, cam_out )
     ! Initialize Nudging Parameters
     !----------------------------------  
     if (Nudge_Model) call nudging_init
-    if (Nudge_Model .and. masterproc) write(iulog,*) 'Nudging initialized in physpkg.F90 '
+    ! Debugging
+    !if (Nudge_Model .and. masterproc) write(iulog,*) 'Nudging initialized in physpkg.F90 '
 
 end subroutine phys_init
 
@@ -1590,7 +1591,8 @@ subroutine tphysac (ztodt,   cam_in,  &
     if((Nudge_Model .and. Nudge_ON)) then
       call nudging_timestep_tend(state,ptend)
       call physics_update(state,tend,ptend,ztodt)
-      if (masterproc) write(iulog,*) 'Updated nudging values in physpkg.F90 '
+      ! Debugging
+      !if (masterproc) write(iulog,*) 'Updated nudging values in physpkg.F90 '
     endif
 
 
@@ -2315,7 +2317,8 @@ subroutine phys_timestep_init(phys_state, cam_out, pbuf2d)
   ! Update Nudging values, if needed                                                                                                        
   !----------------------------------                                                                                                       
   if(Nudge_Model) call nudging_timestep_init(phys_state)
-  if (Nudge_Model .and. masterproc) write(iulog,*) 'Nudging initialized in phys_timestep_init physpkg.F90 '
+  ! Debugging
+  !if (Nudge_Model .and. masterproc) write(iulog,*) 'Nudging initialized in phys_timestep_init physpkg.F90 '
 
 end subroutine phys_timestep_init
 

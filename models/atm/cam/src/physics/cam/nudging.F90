@@ -302,8 +302,8 @@ contains
    !---------------
    integer ierr,unitn
 
-   !  Debugging
-   write(iulog,*) 'NUDGING_READNL worked'
+   !!  Debugging
+   !write(iulog,*) 'NUDGING_READNL worked'
 
    
    namelist /nudging_nl/ Nudge_Model,Nudge_Path,                       &
@@ -955,8 +955,8 @@ contains
      end do
    endif
 
-   !  Debugging
-   write(iulog,*) 'NUDGING_TIMESTEP_INIT worked'
+   !!  Debugging
+   !write(iulog,*) 'NUDGING_TIMESTEP_INIT worked'
 
 
    !----------------------------------------------------------------
@@ -1029,8 +1029,8 @@ contains
    ! HERE Implement time dependence of Nudging Coefs HERE
    !-------------------------------------------------------
 
-   !  Debugging
-   write(iulog,*) 'NUDGING_TIMESTEP_INIT before updating'
+   !!  Debugging
+   !write(iulog,*) 'NUDGING_TIMESTEP_INIT before updating'
 
 
    !---------------------------------------------------
