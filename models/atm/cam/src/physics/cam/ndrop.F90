@@ -1097,7 +1097,7 @@ subroutine dropmixnuc( &
 
    call ccncalc(state, pbuf, cs, ccn)
    do l = 1, psat
-      if ( (SPCAM_mmf) .or. use_SPCAM) then !hparish changed the next line to this to output CCN fields for SPCAM. 
+      if ( (SPCAM_mmf) .or. use_SPCAM .or. .not. use_SPCAM) then !hparish changed the next line to this to output CCN fields for SPCAM. 
 !      if ( (SPCAM_mmf) .or. .not. use_SPCAM) then ! called in the MMF part only or in the standard CAM
          call outfld(ccn_name(l), ccn(1,1,l), pcols, lchnk)
       endif
