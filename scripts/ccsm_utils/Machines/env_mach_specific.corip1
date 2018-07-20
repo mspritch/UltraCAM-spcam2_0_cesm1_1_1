@@ -27,10 +27,10 @@ module rm craype
 module load PrgEnv-intel 
 module switch intel intel/16.0.3.210 
 module rm cray-libsci 
-module load papi/5.5.1.2 
-module swap craype craype/2.5.11
+module load papi/5.5.1.4
+module swap craype craype/2.5.13
 module load craype-haswell 
-module load cray-mpich/7.6.0
+module load cray-mpich/7.6.2
 module load pmi/5.0.11
 
 if ( $MPILIB == "mpi-serial" ) then 
