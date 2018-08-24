@@ -650,7 +650,7 @@ integer :: i1, i2, j1, j2, i, j, k, m, n
 
 real(8) :: tmp_total, tmptot
 
-! call t_startf ('micro_proc')
+call t_startf ('micro_proc')
 
 #ifndef CRM
 if(mod(nstep-1,nstatis).eq.0.and.icycle.eq.1) then
@@ -1165,7 +1165,7 @@ if (docloud.or.doclubb)  call micro_diagnose()   ! leave this line here
 if (docloud)  call micro_diagnose()   ! leave this line here
 #endif
 
-! call t_stopf ('micro_proc')
+call t_stopf ('micro_proc')
 
 end subroutine micro_proc
 

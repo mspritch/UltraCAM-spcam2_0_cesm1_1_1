@@ -2477,6 +2477,9 @@ END SUBROUTINE MP_GRAUPEL
 #if (defined CRM && defined MODAL_AERO)
             ELSE if (IACT.EQ.3) then
               INES = 0 
+              IF(K .eq. 100) THEN
+                 write(6, *) 'crterai check if IACT = 3, with DUM =',DUM
+              ENDIF
               CALL DROP_ACTIVATION_GHAN(DUM, T3D(k), RHO(k),  &
                    DUM2, INES, SMAX, K)  
               DUM2 = (DUM2-NC3D(K))/DT 
