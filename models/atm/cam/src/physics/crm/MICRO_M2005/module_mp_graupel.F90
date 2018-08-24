@@ -74,6 +74,7 @@ MODULE module_mp_GRAUPEL
 
    use crm_grid, only: dx
 
+   use cam_logfile,only: iulog
    IMPLICIT NONE
 
    REAL, PARAMETER :: PI = 3.1415926535897932384626434
@@ -2471,15 +2472,11 @@ END SUBROUTINE MP_GRAUPEL
             DUM2 = (DUM2-NC3D(K))/DT
             DUM2 = MAX(0.,DUM2)
             NC3DTEN(K) = NC3DTEN(K)+DUM2
-            IF(K .eq. 100) THEN                                                     
-                write(6, *) 'crterai checking if module_mp_graupel.F90 gets used NC3DTEN = ', DUM2        
-            ENDIF
+            WRITE(iulog, *) 'crterai checking if module_mp_graupel.F90 gets used NC3DTEN = ', DUM2        
 #if (defined CRM && defined MODAL_AERO)
             ELSE if (IACT.EQ.3) then
               INES = 0 
-              IF(K .eq. 100) THEN
-                 write(6, *) 'crterai check if IACT = 3, with DUM =',DUM
-              ENDIF
+              WRITE(iulog, *) 'crterai check if IACT = 3, with DUM =',DUM
               CALL DROP_ACTIVATION_GHAN(DUM, T3D(k), RHO(k),  &
                    DUM2, INES, SMAX, K)  
               DUM2 = (DUM2-NC3D(K))/DT 
