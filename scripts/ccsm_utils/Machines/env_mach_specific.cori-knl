@@ -26,7 +26,7 @@ module rm cray-netcdf-hdf5parallel
 
 module load PrgEnv-intel
 
-module switch intel intel/17.0.0.098
+module switch intel intel/18.0.1.163
 module rm cray-libsci
 module use /global/project/projectdirs/ccsm1/modulefiles/cori
 module load esmf/6.3.0rp1-defio-intel2016-mpi-O
