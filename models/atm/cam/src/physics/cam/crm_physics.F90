@@ -21,6 +21,9 @@ module crm_physics
 #ifdef MODAL_AERO
    use modal_aero_data, only: ntot_amode
 #endif
+#ifdef FOLLOWINVERSION
+   use wv_saturation,   only: aqsat
+#endif
 #ifdef STRATOKILLER
    use tropopause
 #endif
@@ -711,6 +714,12 @@ end subroutine crm_physics_init
    real(r8) clmed(pcols)                      !       "     mid  cloud cover
    real(r8) clhgh(pcols)                      !       "     hgh  cloud cover
    real(r8) :: ftem(pcols,pver)              ! Temporary workspace for outfld variables
+#ifdef CRMVERTADV
+#ifdef FOLLOWINVERSION
+   real(r8) :: ftem2(pcols,pver)
+   real(r8) :: relhum(pcols,pver)
+#endif
+#endif
    real(r8) ul(pver)
    real(r8) vl(pver)
 
@@ -1357,6 +1366,14 @@ end subroutine crm_physics_init
        call get_lat_all_p(lchnk, ncol, nlat)
        call get_lon_all_p(lchnk, ncol, nlon)
 
+#ifdef CRMVERTADV
+#ifdef FOLLOWINVERSION
+       call aqsat (state%t    ,state%pmid  ,ftem2    ,ftem    ,pcols   , &
+       ncol ,pver  ,1       ,pver    )
+       relhum(:ncol,:) = state%q(:ncol,:,1)/ftem(:ncol,:)*100._r8
+#endif
+#endif
+
 #ifdef STRATOKILLER
 !        tropLev(:) = -1
 !       call  tropopause_twmo(state, tropLev) ! tropLev now contains all 1:ncol GCM level indices.
@@ -1529,6 +1546,9 @@ end subroutine crm_physics_init
              crm_utend(i,:), crm_vtend(i,:) &
 #ifdef CRMVERTADV
              , state%omega(i,:) &
+#ifdef FOLLOWINVERSION
+             , relhum(i,:) &
+#endif
 #endif
 #ifdef CRMSUBS 
              , state%omega(i,:) &

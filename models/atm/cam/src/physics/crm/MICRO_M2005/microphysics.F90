@@ -7,6 +7,8 @@ use shr_kind_mod, only: r8 => shr_kind_r8
 
 use params, only: lcond, lsub, fac_cond, fac_sub, ggr, pres0
 
+use perf_mod,      only: t_startf, t_stopf
+
 use crm_grid, only: nx,ny,nzm,nz, &  !grid dimensions; nzm = nz-1 # of scalar lvls
      dimx1_s,dimx2_s,dimy1_s,dimy2_s, & ! actual scalar-array dimensions in x,y
      dz, adz, dostatis, masterproc, &
@@ -650,7 +652,7 @@ integer :: i1, i2, j1, j2, i, j, k, m, n
 
 real(8) :: tmp_total, tmptot
 
-call t_startf ('micro_proc')
+call t_startf('micro_proc')
 
 #ifndef CRM
 if(mod(nstep-1,nstatis).eq.0.and.icycle.eq.1) then
@@ -1165,7 +1167,7 @@ if (docloud.or.doclubb)  call micro_diagnose()   ! leave this line here
 if (docloud)  call micro_diagnose()   ! leave this line here
 #endif
 
-call t_stopf ('micro_proc')
+call t_stopf('micro_proc')
 
 end subroutine micro_proc
 
