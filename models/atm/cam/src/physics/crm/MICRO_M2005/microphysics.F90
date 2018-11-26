@@ -99,6 +99,9 @@ real, allocatable, dimension(:) ::  qpsrc   !source of precipitation microphysic
 
 real, allocatable, dimension(:,:,:)  :: wvar  ! the vertical velocity variance from subgrid-scale motion,
                                               ! which is needed in droplet activation.
+! crt 11/26/18 - new otuput
+real, allocatable, dimension(:,:,:)  :: cldactss  ! incloud supersaturation
+
 #ifdef CRM
 ! hm 7/26/11 new output
 real, public, allocatable, dimension(:,:,:)  :: aut1  !
@@ -322,7 +325,8 @@ subroutine micro_setparm()
      allocate (qpevp(nz), qpsrc(nz), STAT=ierr)
 #endif
      allocate (wvar(nx,ny,nzm), STAT=ierr)
-
+! crt 11/26/18 allocate cldactss
+     allocate (cldactss(nx,ny,nzm), STAT=ierr)
 #ifdef CRM
 ! hm 7/26/11, add new output
      allocate (aut1(nx,ny,nzm), STAT=ierr)
@@ -343,6 +347,7 @@ subroutine micro_setparm()
      allocate (dep1a(nx,ny,nzm), STAT=ierr)
      allocate (con1a(nx,ny,nzm), STAT=ierr)
 #endif
+
 
 !+++mhwangtest
      allocate (sfcpcp2D(nx,ny), STAT=ierr)
@@ -372,7 +377,6 @@ subroutine micro_setparm()
   mklsadv = 0.
 
   wvar = 0.
-
 #ifdef CRM
 ! hm 7/26/11, new output
   aut1 = 0.
@@ -391,8 +395,9 @@ subroutine micro_setparm()
   sub1a = 0.
   dep1a = 0.
   con1a = 0.
+  ! crt 11/26/18 new output
+  cldactss = 0.
 #endif
-
   ! initialize flag arrays to all mass, no number, no precip
   flag_wmass = 1
   flag_number = 0
@@ -627,6 +632,8 @@ real, dimension(nzm) :: &
      tmpqcl, tmpqci, tmpqr, tmpqs, tmpqg, tmpqv, &
      tmpncl, tmpnci, tmpnr, tmpns, tmpng,  &
      tmpw, tmpwsub, tmppres, tmpdz, tmptabs, &
+! crt 11/26/18 new supersaturation output
+     tmpcldactss, &
 ! hm 7/26/11, new output
      tmpaut,tmpacc,tmpevpc,tmpevpr,tmpmlt, &
      tmpsub,tmpdep,tmpcon, &
@@ -858,6 +865,8 @@ do j = 1,ny
            tmpncl,tmpnci,tmpns,tmpnr, &
            tmtend1d,mtendqv, &
            tmptabs,tmpqv,tmppres,rho,tmpdz,tmpw,tmpwsub, &
+! crt 11/26/18L added new cld activation ss output
+           tmpcldactss, &
 ! hm 7/26/11, new output
            tmpacc,tmpaut,tmpevpc,tmpevpr,tmpmlt, &
            tmpsub,tmpdep,tmpcon, &
@@ -906,6 +915,8 @@ do j = 1,ny
            tmpncl,tmpnci,tmpns,tmpnr, &
            tmtend1d,mtendqv, &
            tmptabs,tmpqv,tmppres,rho,tmpdz,tmpw,tmpwsub, &
+! crt 11/26/18L added new cld activation ss output
+           tmpcldactss, &
 !! hm 7/26/11, new output
            tmpacc,tmpaut,tmpevpc,tmpevpr,tmpmlt, &
            tmpsub,tmpdep,tmpcon, &
@@ -931,7 +942,6 @@ do j = 1,ny
       sub1(i,j,:) = tmpsub(:)      
       dep1(i,j,:) = tmpdep(:)      
       con1(i,j,:) = tmpcon(:)      
-
 ! hm 8/31/11, new output for gcm-grid and time-step avg
 ! rates are summed here over the icycle loop
 ! note: rates are multiplied by time step, and then
@@ -945,6 +955,10 @@ do j = 1,ny
       dep1a(i,j,:) = dep1a(i,j,:) + dep1(i,j,:)*dtn
       con1a(i,j,:) = con1a(i,j,:) + con1(i,j,:)*dtn
 #endif
+
+! crt 11/26/18 - new output activation supersaturation
+      cldactss(i,j,:) = tmpcldactss(:)
+
 
      ! update microphysical quantities in this grid column
       if(doprecip) then

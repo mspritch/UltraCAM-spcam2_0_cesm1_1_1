@@ -655,6 +655,7 @@ end subroutine crm_physics_init
    real(r8) spns(pcols,pver)         ! snow particle number (#/kg)
    real(r8) spng(pcols,pver)         ! graupel particle number (#/kg)
    real(r8) spnr(pcols,pver)         ! rain particle number (#/kg)
+   real(r8) spactss(pcols,pver)      ! Supersaturation in CRM (ratio with respect to saturation)
    real(r8) wvar_crm (pcols,crm_nx, crm_ny, crm_nz)   ! vertical velocity variance (m/s)
 
 ! hm 7/26/11, add new output
@@ -1204,6 +1205,7 @@ end subroutine crm_physics_init
           spns(:,:) = 0.
           spng(:,:) = 0.
           spnr(:,:) = 0.
+          spactss(:,:) = 0.
 ! hm 8/31/11, add new output
           aut_crm_a(:,:) = 0.
           acc_crm_a(:,:) = 0.
@@ -1514,7 +1516,8 @@ end subroutine crm_physics_init
              mctot(i,:),              mcup(i,:),                mcdn(i,:),             mcuup(i,:),              mcudn(i,:),                &
              spqc(i,:),               spww(i,:),       spbuoya(i,:), spqi(i,:),       spqs(i,:),     spqg(i,:),               spqr(i,:), &
 #ifdef m2005
-             spnc(i,:),               spni(i,:),                spns(i,:),             spng(i,:),               spnr(i,:),               &
+             spnc(i,:),               spni(i,:),                spns(i,:),             spng(i,:),               spnr(i,:),   spactss(i,:)  &
+! crt 11/26/18 added new output spactss
 #ifdef MODAL_AERO
              naermod,                 vaerosol,                 hygro,                                                                     &
 #endif 
@@ -1768,6 +1771,7 @@ end subroutine crm_physics_init
           call outfld('SPNS    ',spns         ,pcols   ,lchnk   )
           call outfld('SPNG    ',spng         ,pcols   ,lchnk   )
           call outfld('SPNR    ',spnr         ,pcols   ,lchnk   )
+          call outfld('SPACTSS ',spactss      ,pcols   ,lchnk   )  ! crt 11/26/18 added for output
        endif
 
        call outfld('SPQTFLX ',flux_qt        ,pcols   ,lchnk   )

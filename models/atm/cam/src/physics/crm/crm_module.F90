@@ -34,7 +34,8 @@ subroutine crm        (lchnk, icol, &
                        mc, mcup, mcdn, mcuup, mcudn, &
                        crm_qc, crm_ww, crm_buoya, crm_qi, crm_qs, crm_qg, crm_qr, &
 #ifdef m2005
-                       crm_nc, crm_ni, crm_ns, crm_ng, crm_nr, &
+                       crm_nc, crm_ni, crm_ns, crm_ng, crm_nr, crm_actss, &
+! crt 11/26/18 added new crm_actss output
 #ifdef MODAL_AERO
                        naermod, vaerosol, hygro,     &
 #endif 
@@ -273,6 +274,7 @@ subroutine crm        (lchnk, icol, &
          real(r8), intent(out) :: crm_ns(plev)  ! mean snow         (#/kg)
          real(r8), intent(out) :: crm_ng(plev)  ! mean graupel      (#/kg)
          real(r8), intent(out) :: crm_nr(plev)  ! mean rain         (#/kg)
+         real(r8), intent(out) :: crm_actss(plev)  ! saturation ratio (1.)
 #ifdef MODAL_AERO
          real(r8), intent(in)  :: naermod(plev, ntot_amode)     ! Aerosol number concentration [/m3]
          real(r8), intent(in)  :: vaerosol(plev, ntot_amode)    ! aerosol volume concentration [m3/m3]
@@ -909,6 +911,7 @@ if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -32. .and. lati
         crm_ns = 0.
         crm_ng = 0.
         crm_nr = 0.
+        crm_actss = 0.  !crt 11/26/18 added supersaturation for diag purposes
 ! hm 8/31/11 add new variables
         aut_crm_a = 0.
         acc_crm_a = 0.
@@ -2070,6 +2073,8 @@ if ( (latitude0 .gt. -32. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. 
            crm_nr(l) = crm_nr(l) + micro_field(i,j,k,inr)
            crm_ng(l) = crm_ng(l) + micro_field(i,j,k,ing)
            crm_ns(l) = crm_ns(l) + micro_field(i,j,k,ins)
+!  crt 11/26/18 added changes
+           crm_actss(l) = crm_actss(l) + cldactss(i,j,k)
 #endif
 
 	  end do
@@ -2112,6 +2117,7 @@ if ( (latitude0 .gt. -32. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. 
         crm_ns = crm_ns * factor_xy
         crm_ng = crm_ng * factor_xy
         crm_nr = crm_nr * factor_xy
+        crm_actss = crm_actss * factor_xy
 
 
 ! hm 8/31/11 new output, gcm-grid- and time-step avg
