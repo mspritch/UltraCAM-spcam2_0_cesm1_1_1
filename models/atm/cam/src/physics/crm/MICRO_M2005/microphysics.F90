@@ -171,15 +171,15 @@ subroutine micro_setparm()
    domodal_aero = .true.      ! use modal aerosol
 #endif
 #ifdef CLUBB_CRM
-     dosubgridw = .false.        ! Use clubb's w'^2 for sgs w
+     dosubgridw = .true.        ! Use clubb's w'^2 for sgs w
      aerosol_mode = 2           ! use lognormal CCN relationship
      doarcticicenucl = .false.  ! use mid-latitude parameters
-     docloudedgeactivation  = .false. ! activate droplets at cloud base, and edges
+     docloudedgeactivation  = .true. ! activate droplets at cloud base, and edges
 #else
      aerosol_mode = 2      
-     dosubgridw = .false.     
+     dosubgridw = .true.     
      doarcticicenucl = .false.  ! use mid-latitude parameters
-     docloudedgeactivation  = .false. 
+     docloudedgeactivation  = .true. 
 #endif /*CLUBB_CRM*/
 
    Nc0 = 100. ! default droplet number concentration
