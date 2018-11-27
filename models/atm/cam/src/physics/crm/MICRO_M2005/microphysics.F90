@@ -182,7 +182,7 @@ subroutine micro_setparm()
      docloudedgeactivation  = .true. 
 #endif /*CLUBB_CRM*/
 
-   Nc0 = 100. ! default droplet number concentration
+   Nc0 = 10. ! default droplet number concentration
    
    ccnconst = 120.            ! maritime value (/cm3), adapted from Rasmussen 
    ccnexpnt = 0.4             !   et al (2002) by Hugh Morrison et al.  Values
