@@ -171,18 +171,18 @@ subroutine micro_setparm()
    domodal_aero = .true.      ! use modal aerosol
 #endif
 #ifdef CLUBB_CRM
-     dosubgridw = .true.        ! Use clubb's w'^2 for sgs w
+     dosubgridw = .false.        ! Use clubb's w'^2 for sgs w
      aerosol_mode = 2           ! use lognormal CCN relationship
      doarcticicenucl = .false.  ! use mid-latitude parameters
-     docloudedgeactivation  = .true. ! activate droplets at cloud base, and edges
+     docloudedgeactivation  = .false. ! activate droplets at cloud base, and edges
 #else
      aerosol_mode = 2      
-     dosubgridw = .true.     
+     dosubgridw = .false.     
      doarcticicenucl = .false.  ! use mid-latitude parameters
-     docloudedgeactivation  = .true. 
+     docloudedgeactivation  = .false. 
 #endif /*CLUBB_CRM*/
 
-   Nc0 = 10. ! default droplet number concentration
+   Nc0 = 100. ! default droplet number concentration
    
    ccnconst = 120.            ! maritime value (/cm3), adapted from Rasmussen 
    ccnexpnt = 0.4             !   et al (2002) by Hugh Morrison et al.  Values
