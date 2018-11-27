@@ -1435,7 +1435,7 @@ subroutine activate_modal(wbar, sigw, wdiab, wminf, wmaxf, tair, rhoair,  &
          enddo
 
          call maxsat(zeta,eta,nmode,smc,smax)
-         !	      write(iulog,*)'w,smax=',w,smax
+         write(iulog,*)'w,smax=',w,smax
 
          lnsmax=log(smax)
 
@@ -1589,6 +1589,8 @@ subroutine activate_modal(wbar, sigw, wdiab, wminf, wmaxf, tair, rhoair,  &
          enddo
 
          call maxsat(zeta,eta,nmode,smc,smax)
+! Added comment for diagnosis
+         write(iulog,*)'Second activation w,smax=',w,smax
 
          lnsmax=log(smax)
          xmincoeff=alogaten-twothird*(lnsmax-alog2)-alog3

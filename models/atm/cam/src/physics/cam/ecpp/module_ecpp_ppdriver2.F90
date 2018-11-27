@@ -160,7 +160,7 @@ end type ptr2d_t
         afrac_cut_0p1 = afrac_cut*0.1_r8
 
 ! set flags 
-        activat_onoff_ecpp = 0      ! droplet activation; 1 turns on activation
+        activat_onoff_ecpp = 1      ! droplet activation; 1 turns on activation
         cldchem_onoff_ecpp = 1      ! cloud chemistry 
         rename_onoff_ecpp = 1        ! renaming (modal merging)
 
