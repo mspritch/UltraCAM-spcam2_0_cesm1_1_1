@@ -1516,7 +1516,7 @@ end subroutine crm_physics_init
              mctot(i,:),              mcup(i,:),                mcdn(i,:),             mcuup(i,:),              mcudn(i,:),                &
              spqc(i,:),               spww(i,:),       spbuoya(i,:), spqi(i,:),       spqs(i,:),     spqg(i,:),               spqr(i,:), &
 #ifdef m2005
-             spnc(i,:),               spni(i,:),                spns(i,:),             spng(i,:),               spnr(i,:),   spactss(i,:)  &
+             spnc(i,:),               spni(i,:),                spns(i,:),             spng(i,:),               spnr(i,:),   spactss(i,:),  &
 ! crt 11/26/18 added new output spactss
 #ifdef MODAL_AERO
              naermod,                 vaerosol,                 hygro,                                                                     &

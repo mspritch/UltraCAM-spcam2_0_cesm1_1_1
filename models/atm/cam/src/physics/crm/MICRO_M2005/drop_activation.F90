@@ -299,7 +299,7 @@ subroutine drop_activation_Ghan(wnuc4, tair4, rhoair4,  &
           endif
 
 ! sensitivity tests:
-!          ndrop4 = max(ndrop4, 100.*1.0e6)  ! the minimum activated droplet number is 100 /cm3
+          ndrop4 = max(ndrop4, 1.*1.0e6)  ! the minimum activated droplet number is 100 /cm3
 
       return
 end subroutine drop_activation_Ghan
