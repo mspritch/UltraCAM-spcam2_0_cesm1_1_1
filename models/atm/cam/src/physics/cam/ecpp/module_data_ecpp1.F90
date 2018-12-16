@@ -1,4 +1,4 @@
-!   file module_data_ecpp1.F
+!   file module_data_ecpp1.F90
 !-----------------------------------------------------------------------
 
 	module module_data_ecpp1
@@ -225,7 +225,7 @@
 ! time step for the ECPP
 ! It is fixed to be 1800 s. The GCM time step can be less than 1800s, such as 600s for UPCAM 
 ! For example, if GCM time step is 600s, ECPP will be called at every third GCM time step
-        real(r8), parameter :: dtstep_pp_input =  1800.0_r8            
+        real(r8), parameter :: dtstep_pp_input =  600.0_r8            
 
 	end module module_data_ecpp1
 
