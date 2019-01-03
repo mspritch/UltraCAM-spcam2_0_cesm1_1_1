@@ -90,7 +90,6 @@ cat >! $CASEROOT/${CASE}.l_archive << EOF1
 #SBATCH -p regular
 #SBATCH -C haswell 
 #SBATCH -A m2840 
-#SBATCH --qos=premium
 cd $CASEROOT 
 source ./Tools/ccsm_getenv || exit -1
 cd \$DOUT_S_ROOT
