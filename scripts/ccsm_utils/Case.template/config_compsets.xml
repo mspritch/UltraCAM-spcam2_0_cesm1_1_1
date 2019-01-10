@@ -1345,6 +1345,12 @@ TODO: for AMIP, want to have another variable that crashes if end of dataset is 
          CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
 />
 
+<compset NAME="F_2000_UPCAM_m2005_ECPP_dt1p5_3D" SHORTNAME="FUPecppdt1p53D"
+         DESC="UPCAM for m2005 + ECPP case"
+         CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -use_SPCAM -crm_nx 8 -crm_ny 8 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.5D0 -SPCAM_microp_scheme m2005 -use_ECPP" 
+         CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
+/>
+
 
 <compset NAME="F_2000_SPCAM_m2005_ECPP" SHORTNAME="FSPCAMecpp"
          DESC="SPCAM for m2005 + ECPP case"
