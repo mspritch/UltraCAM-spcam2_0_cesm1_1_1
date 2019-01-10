@@ -8,35 +8,35 @@
 #source /opt/apps/lmod/lmod/init/perl
 #source /opt/apps/lmod/lmod/init/env_modules_python.py
 #source /opt/apps/lmod/lmod/init/sh
-#source /opt/apps/lmod/lmod/init/csh
+source /opt/apps/lmod/lmod/init/csh
 #export PATH=/opt/apps/lmod/lmod/libexec/lmod perl
 #export PATH=/opt/apps/lmod/lmod/libexec/lmod python
 
 module load TACC
-module load python/2.7.13
-module load intel/18.0.0
-module load cmake/3.10.2
-module load netcdf/4.3.3.1
+module load python
+module load intel
+module load cmake
+module load netcdf
 module load git
 module load autotools
 module load xalt
 
 if ( $MPILIB == "mvapich2" ) then 
-  module load mvapich2/2.3b
-  module load pnetcdf/1.8.1
-  module load phdf5/1.8.16
-  module load parallel-netcdf/4.3.3.1
+  module load mvapich2
+  module load pnetcdf
+  #module load phdf5/1.8.16
+  module load parallel-netcdf
 endif 
 if ( $MPILIB != "impi" ) then 
   module rm mvapich2 
-  module load phdf5/1.8.16
-  module load impi/17.0.3
-  module load pnetcdf/1.8.1
-  module load parallel-netcdf/4.3.3.1
+  #module load phdf5/1.8.16
+  module load impi
+  module load pnetcdf
+  module load parallel-netcdf
 endif 
 if ( $MPILIB == "mpi-serial" ) then 
-  module load netcdf/4.3.3.1
-  module load hdf5/1.8.16
+  module load netcdf
+  #module load hdf5/1.8.16
 endif 
 
 setenv OMP_STACKSIZE 256M
