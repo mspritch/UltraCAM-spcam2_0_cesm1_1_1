@@ -867,9 +867,7 @@ for mct, etc.
 </compiler>
 
 <compiler MACH="stampede2-skx">
-  <CPPDEFS>
-    <append> -DHAVE_NANOTIME </append>
-  </CPPDEFS>
+  <ADD_CPPDEFS> -DFORTRANUNDERSCORE -DNO_R16 -DHAVE_NANOTIME </ADD_CPPDEFS>
   <NETCDF_PATH>$(TACC_NETCDF_DIR)</NETCDF_PATH>
   <PIO_FILESYSTEM_HINTS>lustre</PIO_FILESYSTEM_HINTS>
   <PNETCDF_PATH>$(TACC_PNETCDF_DIR)</PNETCDF_PATH>
@@ -882,19 +880,10 @@ for mct, etc.
   <SFC>ifort</SFC>
   <SCC>icc</SCC>
   <SCXX>icpc</SCXX>
-  <CFLAGS>
-    <append> -xCORE-AVX512 -no-fma </append>
-  </CFLAGS>
-  <FFLAGS>
-    <append> -xCORE-AVX512 -no-fma </append>
-    <append MPILIB="mpi-serial"> -mcmodel medium </append>
-  </FFLAGS>
-  <LDFLAGS>
-    <append>-L$(TACC_HDF5_LIB) -lhdf5 $(MKL) -zmuldefs -xCORE-AVX512</append>
-  </LDFLAGS>
-  <SLIBS>
-    <append>$(shell $(NETCDF_PATH)/bin/nf-config --flibs) -L$(TACC_HDF5_LIB) -lhdf5</append>
-  </SLIBS>
+  <ADD_FFLAGS> -xCORE-AVX512 -no-fma </ADD_FFLAGS>
+  <ADD_CFLAGS> -xCORE-AVX512 -no-fma </ADD_CFLAGS>
+  <ADD_SLIBS>$(shell $(NETCDF_PATH)/bin/nf-config --flibs) -L$(TACC_HDF5_LIB) -lhdf5</ADD_SLIBS>
+  <ADD_LDFLAGS>-L$(TACC_HDF5_LIB) -lhdf5-L$(TACC_HDF5_LIB) -lhdf5 $(MKL) -zmuldefs -xCORE-AVX512</ADD_LDFLAGS>
   <TRILINOS_PATH>$(TRILINOS_PATH)</TRILINOS_PATH>
   <HAS_F2008_CONTIGUOUS>FALSE</HAS_F2008_CONTIGUOUS>
 </compiler>
