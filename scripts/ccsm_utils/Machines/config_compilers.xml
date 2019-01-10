@@ -870,12 +870,12 @@ for mct, etc.
   <CPPDEFS>
     <append> -DHAVE_NANOTIME </append>
   </CPPDEFS>
-  <NETCDF_PATH>$ENV{TACC_NETCDF_DIR}</NETCDF_PATH>
+  <NETCDF_PATH>$(TACC_NETCDF_DIR)</NETCDF_PATH>
   <PIO_FILESYSTEM_HINTS>lustre</PIO_FILESYSTEM_HINTS>
-  <PNETCDF_PATH>$ENV{TACC_PNETCDF_DIR}</PNETCDF_PATH>
+  <PNETCDF_PATH>$(TACC_PNETCDF_DIR)</PNETCDF_PATH>
 </compiler>
 
-<compiler MACH="stampede2" COMPILER="intel">
+<compiler MACH="stampede2-skx" COMPILER="intel">
   <CFLAGS>
     <!--ADD_FFLAGS DEBUG="FALSE"> -O2 -debug minimal -qno-opt-dynamic-align -qopt-zmm-usage=high</ADD_FFLAGS-->
     <append> -xCORE-AVX2 </append>
