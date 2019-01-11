@@ -56,11 +56,12 @@ cat >> ${CASEROOT}/${CASE}.run << EOF1
 sleep 2
 cd \$RUNDIR
 echo "\`date\` -- CSM EXECUTION BEGINS HERE" 
-
-setenv OMP_STACKSIZE 128M
-setenv OMP_NUM_THREADS ${maxthrds}
-srun --label --ntasks=${maxtasks} --cpu_bind=sockets --cpu_bind=verbose --kill-on-bad-exit \$EXEROOT/cesm.exe >&! cesm.log.\$LID
-
+if (\$MPILIB != "mpi-serial") then                                             
+   ibrun \$EXEROOT/cesm.exe >&! cesm.log.\$LID                                 
+   wait                                                                        
+else                                                                           
+   \$EXEROOT/cesm.exe  >&! cesm.log.\$LID                                      
+endif 
 wait
 echo "\`date\` -- CSM EXECUTION HAS FINISHED" 
 
@@ -87,9 +88,7 @@ cat >! $CASEROOT/${CASE}.l_archive << EOF1
 ###SBATCH --mail-user=xyz@abc.com
 #SBATCH --output=lta%jodid.out
 #SBATCH --error=lta%jodid.err
-#SBATCH -p regular
-#SBATCH -C haswell 
-#SBATCH -A m2840 
+#SBATCH -p regular 
 cd $CASEROOT 
 source ./Tools/ccsm_getenv || exit -1
 cd \$DOUT_S_ROOT

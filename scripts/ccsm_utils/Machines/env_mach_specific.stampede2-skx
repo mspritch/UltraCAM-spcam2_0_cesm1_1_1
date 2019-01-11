@@ -12,30 +12,31 @@ source /opt/apps/lmod/lmod/init/csh
 #export PATH=/opt/apps/lmod/lmod/libexec/lmod perl
 #export PATH=/opt/apps/lmod/lmod/libexec/lmod python
 
+module purge
 module load TACC
-module load python
-module load intel
-module load cmake
+module load python/2.7.13
+module load intel/17.0.4
+module load cmake/3.10.2
 module load netcdf
 module load git
 module load autotools
 module load xalt
 
 if ( $MPILIB == "mvapich2" ) then 
-  module load mvapich2
-  module load pnetcdf
+  module load mvapich2/2.3b
+  module load pnetcdf/1.8.1
   #module load phdf5/1.8.16
-  module load parallel-netcdf
+  module load parallel-netcdf/4.3.3.1
 endif 
 if ( $MPILIB != "impi" ) then 
-  module rm mvapich2 
+  module rm mvapich2
   #module load phdf5/1.8.16
-  module load impi
-  module load pnetcdf
-  module load parallel-netcdf
+  module load impi/17.0.3
+  module load pnetcdf/1.8.1
+  module load parallel-netcdf/4.3.3.1
 endif 
 if ( $MPILIB == "mpi-serial" ) then 
-  module load netcdf
+  module load netcdf/4.3.3.1
   #module load hdf5/1.8.16
 endif 
 
