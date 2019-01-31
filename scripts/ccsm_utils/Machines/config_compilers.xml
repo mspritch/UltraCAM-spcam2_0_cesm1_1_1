@@ -866,6 +866,55 @@ for mct, etc.
   <TRILINOS_PATH>$(TRILINOS_PATH)</TRILINOS_PATH>
 </compiler>
 
+<compiler MACH="stampede2-skx">
+  <ADD_CPPDEFS> -DFORTRANUNDERSCORE -DNO_R16 -DHAVE_NANOTIME </ADD_CPPDEFS>
+  <NETCDF_PATH>$(TACC_NETCDF_DIR)</NETCDF_PATH>
+  <PIO_FILESYSTEM_HINTS>lustre</PIO_FILESYSTEM_HINTS>
+  <PNETCDF_PATH>$(TACC_PNETCDF_DIR)</PNETCDF_PATH>
+</compiler>
+
+<compiler MACH="stampede2-skx" COMPILER="intel">
+  <MPICC>mpicc</MPICC>
+  <MPIFC>mpif90</MPIFC>
+  <MPICXX>mpicxx</MPICXX>
+  <SFC>ifort</SFC>
+  <SCC>icc</SCC>
+  <SCXX>icpc</SCXX>
+  <ADD_FFLAGS> -xCORE-AVX512 -no-fma </ADD_FFLAGS>
+  <ADD_CFLAGS> -xCORE-AVX512 -no-fma </ADD_CFLAGS>
+  <ADD_SLIBS>$(shell $(NETCDF_PATH)/bin/nf-config --flibs) -L$(TACC_HDF5_LIB) -lhdf5</ADD_SLIBS>
+  <ADD_LDFLAGS>-L$(TACC_HDF5_LIB) -lhdf5-L$(TACC_HDF5_LIB) -lhdf5 $(MKL) -zmuldefs -xCORE-AVX512</ADD_LDFLAGS>
+  <TRILINOS_PATH>$(TRILINOS_PATH)</TRILINOS_PATH>
+  <HAS_F2008_CONTIGUOUS>FALSE</HAS_F2008_CONTIGUOUS>
+</compiler>
+
+<compiler MACH="stampede2-knl">
+  <CPPDEFS>
+    <append> -DHAVE_NANOTIME </append>
+  </CPPDEFS>
+  <NETCDF_PATH>$ENV{TACC_NETCDF_DIR}</NETCDF_PATH>
+  <PIO_FILESYSTEM_HINTS>lustre</PIO_FILESYSTEM_HINTS>
+  <PNETCDF_PATH>$ENV{TACC_PNETCDF_DIR}</PNETCDF_PATH>
+</compiler>
+
+<compiler MACH="stampede2-knl" COMPILER="intel">
+  <CFLAGS>
+    <append> -xCOMMON-AVX512 -no-fma </append>
+  </CFLAGS>
+  <FFLAGS>
+    <append> -xCOMMON-AVX512 -no-fma </append>
+    <append MPILIB="mpi-serial"> -mcmodel medium </append>
+  </FFLAGS>
+  <LDFLAGS>
+    <append>-L$ENV{TACC_HDF5_LIB} -lhdf5 $(MKL) -zmuldefs -xCOMMON-AVX512</append>
+  </LDFLAGS>
+  <SLIBS>
+    <append>$SHELL{${NETCDF_PATH}/bin/nf-config --flibs} -L$ENV{TACC_HDF5_LIB} -lhdf5</append>
+  </SLIBS>
+  <TRILINOS_PATH>$ENV{TRILINOS_PATH}</TRILINOS_PATH>
+  <HAS_F2008_CONTIGUOUS>FALSE</HAS_F2008_CONTIGUOUS>
+</compiler>
+
 <compiler MACH="pronghorn" COMPILER="intel">
   <MPICC>mpiicc</MPICC>
   <MPIFC>mpiifort</MPIFC>
