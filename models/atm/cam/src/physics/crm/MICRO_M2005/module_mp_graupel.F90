@@ -2775,7 +2775,7 @@ END SUBROUTINE MP_GRAUPEL
 
          !bloss: option for fixing pgam
          if(dofix_pgam) then
-            pgam(k) = pgam_fixed
+            PGAM(K) = pgam_fixed
          else
 
 !         DUM = PRES(K)/(R*T3D(K))
@@ -4444,7 +4444,7 @@ END SUBROUTINE MP_GRAUPEL
       IF (DUMC(K).GE.QSMALL) THEN
          !bloss: option for fixing pgam
          if(dofix_pgam) then
-            pgam(k) = pgam_fixed
+            PGAM(K) = pgam_fixed
          else
 
 !         DUM = PRES(K)/(R*T3D(K))

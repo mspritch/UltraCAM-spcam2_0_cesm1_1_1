@@ -201,9 +201,9 @@ subroutine micro_setparm()
    aer_sig2 = 2.5
    aer_n2 = 1.8
    
-!   dofix_pgam = .true.
+   dofix_pgam = .true.
 !   pgam_fixed = 10.0       !hparish modified following correspondence with Matt W. Suggested by Peter B. 
-   dofix_pgam = .false.
+!   dofix_pgam = .false.
    pgam_fixed = 5. ! middle range value -- corresponds to radius dispersion ~ 0.4
 
   !----------------------------------
