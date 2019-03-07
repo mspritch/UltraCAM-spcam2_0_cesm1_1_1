@@ -4461,6 +4461,10 @@ END SUBROUTINE MP_GRAUPEL
         LAMMAX = (PGAM(K)+1.)/1.E-6
         DLAMC=MAX(DLAMC,LAMMIN)
         DLAMC=MIN(DLAMC,LAMMAX)
+        !19/03/07 crterai: to make sure drop fall speeds are constant also fix DLAMC 
+        if(dofix_pgam) then
+           DLAMC=(PGAM(K)+1.)/10.E-6
+        end if
       END IF
 !......................................................................
 ! SNOW
