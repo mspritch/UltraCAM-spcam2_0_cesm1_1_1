@@ -1387,7 +1387,7 @@ TODO: for AMIP, want to have another variable that crashes if end of dataset is 
          CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
 />
 
-<compset NAME="F_2000_mam3" SHORTNAME="F2000PIaero"
+<compset NAME="F_2000_mam3" SHORTNAME="F2000PDaero"
          DESC="Conventional CAM5 case for 2000 conditions"
          CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -nlev 30" 
          CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
