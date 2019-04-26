@@ -14,7 +14,7 @@ source /opt/apps/lmod/lmod/init/csh
 
 module purge
 module load TACC
-module load python/2.7.15
+module load python/2.7.14
 module load intel/17.0.4
 module load cmake/3.10.2
 module load netcdf
@@ -31,7 +31,7 @@ endif
 if ( $MPILIB != "impi" ) then 
   module rm mvapich2
   #module load phdf5/1.8.16
-  module load impi/18.0.2
+  module load impi/17.0.3
   module load pnetcdf/1.8.1
   module load parallel-netcdf/4.3.3.1
 endif 
