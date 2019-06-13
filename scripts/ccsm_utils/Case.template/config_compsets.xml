@@ -1308,6 +1308,11 @@ TODO: for AMIP, want to have another variable that crashes if end of dataset is 
          CAM_CONFIG_OPTS="-rad camrt -chem trop_bam -phys cam4 -use_SPCAM -crm_nx 128 -crm_ny 32 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.250D0 -SPCAM_microp_scheme sam1mom"
 />
 
+<compset NAME="F_2000_SPCAM_sam1mom_UP_MEDLARGE" SHORTNAME="FUPCAMmed"
+         DESC="UPCAM for sam1mom case with short CRM"
+         CAM_CONFIG_OPTS="-rad camrt -chem trop_bam -phys cam4 -use_SPCAM -crm_nx 64 -crm_ny 32 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.250D0 -SPCAM_microp_scheme sam1mom"
+/>
+
 
 <compset NAME="F_2000_SPCAM_m2005" SHORTNAME="FSPCAMm"
          DESC="SPCAM for m2005 case"

@@ -4,22 +4,22 @@
 # HP has also made other versions of this script for simpler model configurations.
 # Questions? Please contact h.parish@uci.edu at UC Irvine ESS.
 
-set run_time       = 00:49:00
+set run_time       = 02:00:00
 set queue          = skx-normal
-set account        = G-819748
+set account        = TG-ATM190002
 set priority       = normal 
-set run_start_date = "2008-10-01"
+set run_start_date = "2008-07-01"
 set start_tod      = "00000"
 #set start_tod      = "43200"
-set Np             = 414
-set Np_else        = 64
+set Np             = 828
+set Np_else        = 407
 
 ## ====================================================================
 #   define case
 ## ====================================================================
 
 setenv CCSMTAG     UltraCAM-spcam2_0_cesm1_1_1
-setenv CASE        TimingTest2_Npelse64_20081001_L125_4x5_m2005_32x1CRM250m_$Np
+setenv CASE        TimingTest_Npelse414_20080701_L125_4x5_m2005_32x1CRM250m_$Np
 #setenv CASE        AeroPD_nudgEns31_4x5_m2005_32x1CRM4000m_L30_MultiBase_0Z_$Np
 #setenv CASESET     F_2000_UPCAM_m2005_ECPP
 setenv CASESET     F_2000_UPCAM_m2005_ECPP_dt1p5
@@ -28,7 +28,7 @@ setenv CASESET     F_2000_UPCAM_m2005_ECPP_dt1p5
 #setenv CASERES     f09_g16
 #setenv CASERES     f19_g16
 setenv CASERES     f45_f45
-setenv PROJECT     G-819748
+setenv PROJECT     TG-ATM190002
 
 ## ====================================================================
 #   define directories
@@ -124,7 +124,7 @@ n2ovmr = 316.0e-9
 &cam_inparm
 phys_loadbalance = 2
 
-ncdata = '/work/06166/tg854660/stampede2/UP_init_files/L125_4x5/regrid_EI_4x5_L125.cam2.i.2008-10-01-00000.nc'
+ncdata = '/work/06166/tg854660/stampede2/UP_init_files/L125_4x5/regrid_EI_4x5_L125.cam2.i.2008-07-01-00000.nc'
 
 iradsw = 2 
 iradlw = 2
@@ -146,10 +146,13 @@ fincl2 = 'TGCLDLWP:A','TGCLDIWP:A','PS:A','FLUT:A','FSNTOA:A','FLNS:A','FSNS:A',
          'Z3:A','CLDTOP:A','FLDS:A','FLDSC:A',
          'FSDSC:A','FSNSC:A','FSNTC:A','FSNTOAC:A','FLNSC:A','FLNTC:A','FLUTC:A','AODVIS:A'
 
+fincl3 = 'CCN3:A','CCN4:A','CCN5:A','CCN6:A','SPNC:A','SPQC:A','SPNR:A','SPQR:A'
+fincl4 = 'SPWW:A','SPQI:A','SPQS:A','SPQG:A','SPTKE:A','SPBUOYA:A','SPDT:A','SPDQ:A','SPQPEVP:A'
+
 !fincl3 = 'CCN3:A','CCN4:A','SPNC:A','SPQC:A'
 
-nhtfrq = 0,12
-mfilt  = 0,6
+nhtfrq = 0,12,12,12
+mfilt  = 0,6,6,6
 
 /
 EOF
@@ -205,7 +208,7 @@ set split_str = `echo $bld_cmp | awk '{split($0,a,"="); print a[3]}'`
 set t_or_f    = `echo $split_str | cut -c 2-5`
 
 if ( $t_or_f == "TRUE" ) then
-    sbatch $CASE.run
+    #sbatch $CASE.run
     echo '-------------------------------------------------'
     #echo '----Build and compile is GOOD, job submitted!----'
     echo '----Build and compile is GOOD, job NOT submitted!----'
