@@ -848,7 +848,8 @@ if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -32. .and. lati
         end do ! k
 
         uhl = u0(1)
-        vhl = v0(1)
+        !vhl = v0(1)   CRT: 2019-06-21 modifying vhl based on Kyle Pressel's mods
+        vhl = min( umax, max(-max,vl(plev-1+1)))*YES3D
 
 ! estimate roughness length assuming logarithmic profile of velocity near the surface:
 
@@ -1330,12 +1331,13 @@ if ( (latitude0 .gt. -32. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. 
 !-----------------------------------------------
 !   	surface fluxes:
 
-     if(dosurface) then
+     !if(dosurface) then
 
-       call crmsurface(bflx)
-
-     end if
-
+       !call crmsurface(bflx)
+       !call crmsurface_better(ustar)
+     !end if
+     call crmsurface_better(ustar) !CRT: 2019-06-21 Replaced call to crmsurface
+     !                              with call to crmsurface_better
 !----------------------------------------------------------
 !	SGS diffusion of momentum:
 
@@ -2300,7 +2302,8 @@ if ( (latitude0 .gt. -32. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. 
                    mkdiff(k,iqr) + mkdiff(k,iqs) + mkdiff(k,iqg) 
 #endif
           tkesgsz(l)= rho(k)*sum(tke(1:nx,1:ny,k))*factor_xy
-          tkez(l)= rho(k)*0.5*(u2z+v2z*YES3D+w2z)*factor_xy + tkesgsz(l)
+          !tkez(l)= rho(k)*0.5*(u2z+v2z*YES3D+w2z)*factor_xy + tkesgsz(l) !modified CRT: 2019-06-21
+          tkez(l)= rho(k)*0.5*(u2z+v2z+w2z)*factor_xy + tkesgsz(l)
           tkz(l) = sum(tk(1:nx, 1:ny, k)) * factor_xy
           pflx(l) = precflux(k)/1000.       !mm/s  -->m/s
 
