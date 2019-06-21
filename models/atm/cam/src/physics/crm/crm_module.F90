@@ -849,7 +849,7 @@ if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -32. .and. lati
 
         uhl = u0(1)
         !vhl = v0(1)   CRT: 2019-06-21 modifying vhl based on Kyle Pressel's mods
-        vhl = min( umax, max(-max,vl(plev-1+1)))*YES3D
+        vhl = min( umax, max(-umax,vl(plev-1+1)))*YES3D
 
 ! estimate roughness length assuming logarithmic profile of velocity near the surface:
 
