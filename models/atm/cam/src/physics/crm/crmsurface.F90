@@ -69,11 +69,11 @@
 
           do j=1,ny
            do i=1,nx
-             u_h0 = max(0.001,sqrt((0.5*(u(i+1,j,1)+u(i,j,1))+ug)**2+ &
+             u_h0 = max(real(0.001),sqrt((0.5*(u(i+1,j,1)+u(i,j,1))+ug)**2 + &
                                    (0.5*(v(i,j+YES3D,1)+v(i,j,1))+vg)**2))
              !tau00 = rho(1) * diag_ustar(z(1),bflx,u_h0,z0)**2 
              tau00 = rho(1) * ustar**2.0 
-             wspd = max(.001,sqrt(uhl*uhl + vhl*vhl))
+             wspd = max(real(.001),sqrt(uhl*uhl + vhl*vhl))
              !fluxbu(i,j) = -(0.5*(u(i+1,j,1)+u(i,j,1))+ug-uhl)/u_h0*tau00
              fluxbu(i,j) = -(0.5*(u(i+1,j,1)+u(i,j,1))+ug-u0(1))/wspd*tau00
              !fluxbv(i,j) = -(0.5*(v(i,j+YES3D,1)+v(i,j,1))+vg-vhl)/u_h0*tau00

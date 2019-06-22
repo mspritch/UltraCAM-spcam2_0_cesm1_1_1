@@ -859,7 +859,7 @@ if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -32. .and. lati
 
         timing_factor = 0.
 
-        prectend=colprec
+        prectend=colprecr
         precstend=colprecs
 
 #ifdef CLUBB_CRM
@@ -1331,12 +1331,12 @@ if ( (latitude0 .gt. -32. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. 
 !-----------------------------------------------
 !   	surface fluxes:
 
-     !if(dosurface) then
+     if(dosurface) then
 
        !call crmsurface(bflx)
-       !call crmsurface_better(ustar)
-     !end if
-     call crmsurface_better(ustar) !CRT: 2019-06-21 Replaced call to crmsurface
+       call crmsurface_better(ustar)
+     end if
+     !call crmsurface_better(ustar) !CRT: 2019-06-21 Replaced call to crmsurface
      !                              with call to crmsurface_better
 !----------------------------------------------------------
 !	SGS diffusion of momentum:
