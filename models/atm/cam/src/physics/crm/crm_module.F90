@@ -859,7 +859,7 @@ if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -32. .and. lati
 
         timing_factor = 0.
 
-        prectend=colprecr
+        prectend=colprec
         precstend=colprecs
 
 #ifdef CLUBB_CRM
