@@ -61,8 +61,8 @@
 
         !if(SFC_FLX_FXD.and..not.SFC_TAU_FXD) then
 
-          uhl = uhl + dtn*utend(1)
-          vhl = vhl + dtn*vtend(1)
+          !uhl = uhl + dtn*utend(1)
+          !vhl = vhl + dtn*vtend(1)
         
 	  taux0 = 0.
 	  tauy0 = 0.
