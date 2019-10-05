@@ -1303,6 +1303,17 @@ TODO: for AMIP, want to have another variable that crashes if end of dataset is 
          CAM_CONFIG_OPTS="-rad camrt -chem trop_bam -phys cam4 -use_SPCAM -crm_nx 128 -crm_ny 1 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.250D0 -SPCAM_microp_scheme sam1mom"
 />
 
+<compset NAME="F_2000_SPCAM_sam1mom_UP_LARGE" SHORTNAME="FUPCAMbig"
+         DESC="UPCAM for sam1mom case with short CRM"
+         CAM_CONFIG_OPTS="-rad camrt -chem trop_bam -phys cam4 -use_SPCAM -crm_nx 128 -crm_ny 32 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.250D0 -SPCAM_microp_scheme sam1mom"
+/>
+
+<compset NAME="F_2000_SPCAM_sam1mom_UP_MEDLARGE" SHORTNAME="FUPCAMmed"
+         DESC="UPCAM for sam1mom case with short CRM"
+         CAM_CONFIG_OPTS="-rad camrt -chem trop_bam -phys cam4 -use_SPCAM -crm_nx 64 -crm_ny 32 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.250D0 -SPCAM_microp_scheme sam1mom"
+/>
+
+
 <compset NAME="F_2000_SPCAM_m2005" SHORTNAME="FSPCAMm"
          DESC="SPCAM for m2005 case"
          CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -use_SPCAM -crm_nx 128 -crm_ny 1 -crm_nz 120 -nlev 120 -crm_dx 250 -crm_dt 5 -SPCAM_microp_scheme m2005" 
@@ -1345,9 +1356,28 @@ TODO: for AMIP, want to have another variable that crashes if end of dataset is 
          CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
 />
 
+<compset NAME="F_2000_UPCAM_m2005_ECPP_BIG" SHORTNAME="FUPCAMecppBIG"
+         DESC="UPCAM for m2005 + ECPP case"
+         CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -use_SPCAM -crm_nx 256 -crm_ny 1 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.5D0 -SPCAM_microp_scheme m2005 -use_ECPP" 
+         CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
+/>
+
+<compset NAME="F_2000_UPCAM_m2005_ECPP_nx128" SHORTNAME="FUPCAMecpp128"
+         DESC="UPCAM for m2005 + ECPP case"
+         CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -use_SPCAM -crm_nx 128 -crm_ny 1 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.2D0 -SPCAM_microp_scheme m2005 -use_ECPP" 
+         CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
+/>
+
+
 <compset NAME="F_2000_UPCAM_m2005_ECPP_dt1p5_3D" SHORTNAME="FUPecppdt1p53D"
          DESC="UPCAM for m2005 + ECPP case"
          CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -use_SPCAM -crm_nx 8 -crm_ny 8 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.5D0 -SPCAM_microp_scheme m2005 -use_ECPP" 
+         CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
+/>
+
+<compset NAME="F_2000_UPCAM_m2005_ECPP_dt1p25_3D" SHORTNAME="FUPecppdt1p53D"
+         DESC="UPCAM for m2005 + ECPP case"
+         CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -use_SPCAM -crm_nx 64 -crm_ny 16 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.25D0 -SPCAM_microp_scheme m2005 -use_ECPP" 
          CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
 />
 
@@ -1375,6 +1405,20 @@ TODO: for AMIP, want to have another variable that crashes if end of dataset is 
 <compset NAME="F_2000_UPCAM_m2005_ECPP_PIaero_dt1p5" SHORTNAME="FUPecppPIdt1p5"
          DESC="UPCAM for m2005 + ECPP case for 1850 conditions with crm_dt=2"
          CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -use_SPCAM -crm_nx 32 -crm_ny 1 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.5D0 -SPCAM_microp_scheme m2005 -use_ECPP" 
+         CAM_NML_USE_CASE="1850_aero_cam5"
+         CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
+/>
+
+<compset NAME="F_2000_UPCAM_m2005_ECPP_PIaero_BIG" SHORTNAME="FUPecppPIBIG"
+         DESC="UPCAM for m2005 + ECPP case for 1850 conditions with crm_dt=2"
+         CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -use_SPCAM -crm_nx 256 -crm_ny 1 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.5D0 -SPCAM_microp_scheme m2005 -use_ECPP" 
+         CAM_NML_USE_CASE="1850_aero_cam5"
+         CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
+/>
+
+<compset NAME="F_2000_UPCAM_m2005_ECPP_PIaero_nx128" SHORTNAME="FUPecppPI128"
+         DESC="UPCAM for m2005 + ECPP case for 1850 conditions with crm_dt=1.2"
+         CAM_CONFIG_OPTS="-rad rrtmg -chem trop_mam3 -phys cam5 -use_SPCAM -crm_nx 128 -crm_ny 1 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.2D0 -SPCAM_microp_scheme m2005 -use_ECPP" 
          CAM_NML_USE_CASE="1850_aero_cam5"
          CAM_NAMELIST_OPTS="dust_emis_fact=0.50"
 />
