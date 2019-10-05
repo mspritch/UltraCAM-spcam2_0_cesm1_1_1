@@ -21,6 +21,9 @@ module crm_physics
 #ifdef MODAL_AERO
    use modal_aero_data, only: ntot_amode
 #endif
+#ifdef FOLLOWINVERSION
+   use wv_saturation,   only: aqsat
+#endif
 #ifdef STRATOKILLER
    use tropopause
 #endif
@@ -652,6 +655,7 @@ end subroutine crm_physics_init
    real(r8) spns(pcols,pver)         ! snow particle number (#/kg)
    real(r8) spng(pcols,pver)         ! graupel particle number (#/kg)
    real(r8) spnr(pcols,pver)         ! rain particle number (#/kg)
+   real(r8) spactss(pcols,pver)      ! Supersaturation in CRM (ratio with respect to saturation)
    real(r8) wvar_crm (pcols,crm_nx, crm_ny, crm_nz)   ! vertical velocity variance (m/s)
 
 ! hm 7/26/11, add new output
@@ -711,6 +715,12 @@ end subroutine crm_physics_init
    real(r8) clmed(pcols)                      !       "     mid  cloud cover
    real(r8) clhgh(pcols)                      !       "     hgh  cloud cover
    real(r8) :: ftem(pcols,pver)              ! Temporary workspace for outfld variables
+#ifdef CRMVERTADV
+#ifdef FOLLOWINVERSION
+   real(r8) :: ftem2(pcols,pver)
+   real(r8) :: relhum(pcols,pver)
+#endif
+#endif
    real(r8) ul(pver)
    real(r8) vl(pver)
 
@@ -1195,6 +1205,7 @@ end subroutine crm_physics_init
           spns(:,:) = 0.
           spng(:,:) = 0.
           spnr(:,:) = 0.
+          spactss(:,:) = 0.
 ! hm 8/31/11, add new output
           aut_crm_a(:,:) = 0.
           acc_crm_a(:,:) = 0.
@@ -1357,6 +1368,14 @@ end subroutine crm_physics_init
        call get_lat_all_p(lchnk, ncol, nlat)
        call get_lon_all_p(lchnk, ncol, nlon)
 
+#ifdef CRMVERTADV
+#ifdef FOLLOWINVERSION
+       call aqsat (state%t    ,state%pmid  ,ftem2    ,ftem    ,pcols   , &
+       ncol ,pver  ,1       ,pver    )
+       relhum(:ncol,:) = state%q(:ncol,:,1)/ftem(:ncol,:)*100._r8
+#endif
+#endif
+
 #ifdef STRATOKILLER
 !        tropLev(:) = -1
 !       call  tropopause_twmo(state, tropLev) ! tropLev now contains all 1:ncol GCM level indices.
@@ -1497,7 +1516,8 @@ end subroutine crm_physics_init
              mctot(i,:),              mcup(i,:),                mcdn(i,:),             mcuup(i,:),              mcudn(i,:),                &
              spqc(i,:),               spww(i,:),       spbuoya(i,:), spqi(i,:),       spqs(i,:),     spqg(i,:),               spqr(i,:), &
 #ifdef m2005
-             spnc(i,:),               spni(i,:),                spns(i,:),             spng(i,:),               spnr(i,:),               &
+             spnc(i,:),               spni(i,:),                spns(i,:),             spng(i,:),               spnr(i,:),   spactss(i,:),  &
+! crt 11/26/18 added new output spactss
 #ifdef MODAL_AERO
              naermod,                 vaerosol,                 hygro,                                                                     &
 #endif 
@@ -1529,6 +1549,9 @@ end subroutine crm_physics_init
              crm_utend(i,:), crm_vtend(i,:) &
 #ifdef CRMVERTADV
              , state%omega(i,:) &
+#ifdef FOLLOWINVERSION
+             , relhum(i,:) &
+#endif
 #endif
 #ifdef CRMSUBS 
              , state%omega(i,:) &
@@ -1748,6 +1771,7 @@ end subroutine crm_physics_init
           call outfld('SPNS    ',spns         ,pcols   ,lchnk   )
           call outfld('SPNG    ',spng         ,pcols   ,lchnk   )
           call outfld('SPNR    ',spnr         ,pcols   ,lchnk   )
+          call outfld('SPACTSS ',spactss      ,pcols   ,lchnk   )  ! crt 11/26/18 added for output
        endif
 
        call outfld('SPQTFLX ',flux_qt        ,pcols   ,lchnk   )

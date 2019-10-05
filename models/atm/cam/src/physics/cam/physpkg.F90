@@ -832,8 +832,8 @@ subroutine phys_init( phys_state, phys_tend, pbuf2d, cam_out )
     ! Initialize Nudging Parameters
     !----------------------------------  
     if (Nudge_Model) call nudging_init
-    ! Debugging
-    !if (Nudge_Model .and. masterproc) write(iulog,*) 'Nudging initialized in physpkg.F90 '
+
+    if (Nudge_Model .and. masterproc) write(iulog,*) 'Nudging initialized in physpkg.F90 '
 
 end subroutine phys_init
 

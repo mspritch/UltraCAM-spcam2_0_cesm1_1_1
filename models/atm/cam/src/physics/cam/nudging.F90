@@ -958,7 +958,6 @@ contains
    !!  Debugging
    !write(iulog,*) 'NUDGING_TIMESTEP_INIT worked'
 
-
    !----------------------------------------------------------------
    ! When past the NEXT time, Update Nudging Arrays and time indices
    !----------------------------------------------------------------

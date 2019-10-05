@@ -74,6 +74,7 @@ MODULE module_mp_GRAUPEL
 
    use crm_grid, only: dx
 
+   use cam_logfile,only: iulog
    IMPLICIT NONE
 
    REAL, PARAMETER :: PI = 3.1415926535897932384626434
@@ -1047,6 +1048,8 @@ END SUBROUTINE MP_GRAUPEL
       SUBROUTINE M2005MICRO_GRAUPEL(QC3DTEN,QI3DTEN,QNI3DTEN,QR3DTEN,NC3DTEN,    &
        NI3DTEN,NS3DTEN,NR3DTEN,QC3D,QI3D,QNI3D,QR3D,NC3D,NI3D,NS3D,NR3D,         &
        T3DTEN,QV3DTEN,T3D,QV3D,PRES,RHO,DZQ,W3D,WVAR, &
+! crt 11/26/18 added output
+       CLDACTSS3D, &
 ! hm 7/26/11, new output
        acc1d,aut1d,evpc1d,evpr1d,mlt1d,sub1d,dep1d,con1d, &
        PRECRT,SNOWRT,            &
@@ -1063,6 +1066,8 @@ END SUBROUTINE MP_GRAUPEL
       SUBROUTINE M2005MICRO_GRAUPEL(QC3DTEN,QI3DTEN,QNI3DTEN,QR3DTEN,NC3DTEN,    &
        NI3DTEN,NS3DTEN,NR3DTEN,QC3D,QI3D,QNI3D,QR3D,NC3D,NI3D,NS3D,NR3D,         &
        T3DTEN,QV3DTEN,T3D,QV3D,PRES,RHO,DZQ,W3D,WVAR, &
+! crt 11/26/18 added output
+       CLDACTSS3D, &
 ! hm 7/26/11, new output
        acc1d,aut1d,evpc1d,evpr1d,mlt1d,sub1d,dep1d,con1d, &
        PRECRT,SNOWRT,            &
@@ -1133,6 +1138,8 @@ END SUBROUTINE MP_GRAUPEL
       REAL, DIMENSION(KMS:KME) ::  DZQ                ! DIFFERENCE IN HEIGHT ACROSS LEVEL (m)
       REAL, DIMENSION(KMS:KME) ::  W3D                ! GRID-SCALE VERTICAL VELOCITY (M/S)
       REAL, DIMENSION(KMS:KME) ::  WVAR               ! SUB-GRID VERTICAL VELOCITY (M/S)
+      REAL, DIMENSION(KMS:KME) ::  CLDACTSS3D         ! SATURATION RATIO
+!crt 11/26/18 Add CLDACTSS3D as output
 
 ! hm 7/26/11, new output
       REAL, DIMENSION(KMS:KME) ::  aut1d               ! 
@@ -1468,6 +1475,7 @@ END SUBROUTINE MP_GRAUPEL
          NPRACS(KMS:KME) = 0.
          NGMLTG(KMS:KME) = 0.
          NGMLTR(KMS:KME) = 0.
+         CLDACTSS3D(KMS:KME) = 0.
 
 ! ATMOSPHERIC PARAMETERS THAT VARY IN TIME AND HEIGHT
          DO K = KTS,KTE
@@ -2456,7 +2464,7 @@ END SUBROUTINE MP_GRAUPEL
            DUM2 = 1./SM2**2*(F12*(PSI/ETA2)**1.5+F22*(SM2**2/(ETA2+3.*PSI))**0.75)
 
            SMAX = 1./(DUM1+DUM2)**0.5
-
+           CLDACTSS3D(K) = SMAX
            UU1 = 2.*LOG(SM1/SMAX)/(4.242*LOG(SIG1))
            UU2 = 2.*LOG(SM2/SMAX)/(4.242*LOG(SIG2))
            DUM1 = NANEW1/2.*(1.-DERF1(UU1))
@@ -2471,14 +2479,17 @@ END SUBROUTINE MP_GRAUPEL
             DUM2 = (DUM2-NC3D(K))/DT
             DUM2 = MAX(0.,DUM2)
             NC3DTEN(K) = NC3DTEN(K)+DUM2
+            WRITE(iulog, *)'crterai checking if module_mp_graupel.F90 gets used NC3DTEN = ', DUM2        
 #if (defined CRM && defined MODAL_AERO)
             ELSE if (IACT.EQ.3) then
               INES = 0 
+              WRITE(iulog, *)'crterai check if IACT = 3, with DUM =',DUM
               CALL DROP_ACTIVATION_GHAN(DUM, T3D(k), RHO(k),  &
                    DUM2, INES, SMAX, K)  
               DUM2 = (DUM2-NC3D(K))/DT 
               DUM2 = MAX(0., DUM2)
               NC3DTEN(K) = NC3DTEN(K)+DUM2
+              CLDACTSS3D(K) = SMAX
 #endif
            END IF  ! IACT
 

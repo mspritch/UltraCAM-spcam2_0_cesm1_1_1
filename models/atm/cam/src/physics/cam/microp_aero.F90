@@ -263,7 +263,7 @@ subroutine microp_aero_init
    call addfld('NIDEP', '1/m3', pver, 'A', 'Activated Ice Number Concentation due to deposition nucleation',phys_decomp)
    call addfld('NIIMM', '1/m3', pver, 'A', 'Activated Ice Number Concentation due to immersion freezing',   phys_decomp)
    call addfld('NIMEY', '1/m3', pver, 'A', 'Activated Ice Number Concentation due to meyers deposition',    phys_decomp)
-
+   call addfld('CLDACT_SS    ', '%     ', pver, 'A', 'In-cloud supersaturation used for cloud activation'   ,phys_decomp)
    if (history_microphysics) then
       call add_default ('WSUB     ', 1, ' ')
    end if
@@ -387,9 +387,10 @@ subroutine microp_aero_run ( &
    real(r8) :: lcldo(pcols,pver)   ! fractional coverage of old liquid cloud
    real(r8) :: qcld                ! total cloud water
    real(r8) :: nctend_mixnuc(pcols,pver)
-   real(r8) :: dum, dum2           ! temporary dummy variable
+   real(r8) :: dum, dum2, dum3     ! temporary dummy variable
    real(r8) :: dmc, ssmc           ! variables for modal scheme.
-
+   real(r8) :: cldactss              ! crterai: temporary variable for gridbox supersat
+   
    real(r8) :: so4_num                               ! so4 aerosol number (#/cm^3)
    real(r8) :: soot_num                              ! soot (hydrophilic) aerosol number (#/cm^3)
    real(r8) :: dst1_num,dst2_num,dst3_num,dst4_num   ! dust aerosol number (#/cm^3)
@@ -405,6 +406,7 @@ subroutine microp_aero_run ( &
 
    real(r8) :: wsub(pcols,pver)    ! diagnosed sub-grid vertical velocity st. dev. (m/s)
    real(r8) :: wsubi(pcols,pver)   ! diagnosed sub-grid vertical velocity ice (m/s)
+   real(r8) :: cldact_ss(pcols,pver)    ! diagnosed incloud supersaturation used for cloud activation (%)
 
    ! history output for ice nucleation
    real(r8) :: nihf(pcols,pver)  !output number conc of ice nuclei due to heterogenous freezing (1/m3)
@@ -697,6 +699,8 @@ subroutine microp_aero_run ( &
 
       ! no tendencies returned from ndrop_bam_run, so just init ptend here
       call physics_ptend_init(ptend)
+     
+      cldact_ss(1:ncol,1:pver)     = 0._r8  ! crterai: initialize the cloud supersaturation output
 
       do k = top_lev, pver
          do i = 1, ncol
@@ -708,8 +712,9 @@ subroutine microp_aero_run ( &
                call ndrop_bam_run( &
                   wsub(i,k), t(i,k), rho(i,k), naer2(i,k,:), naer_all, &
                   naer_all, maerosol(i,k,:),  &
-                  dum2)
+                  dum2,cldactss)
                dum = dum2
+               cldact_ss(i,k)=cldactss
             else
                dum = 0._r8
             end if
@@ -721,6 +726,8 @@ subroutine microp_aero_run ( &
             npccn(i,k) = (dum - nc(i,k)/lcldm(i,k))/(deltatin/2._r8)*lcldm(i,k)
          end do
       end do
+
+      call outfld( 'CLDACT_SS'       , cldact_ss,      pcols, lchnk ) !crterai: output gridbox max supersaturation
 
    end if
 

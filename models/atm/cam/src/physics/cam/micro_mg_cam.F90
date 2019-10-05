@@ -805,6 +805,7 @@ subroutine micro_mg_cam_tend(state, ptend, dtime, pbuf, cmeliq, &
 
    real(r8) :: cdnumc(pcols)                           ! Vertically-integrated droplet concentration
 
+
    ! Averaging arrays for effective radius and number....
    real(r8) :: efiout(pcols,pver)
    real(r8) :: efcout(pcols,pver)

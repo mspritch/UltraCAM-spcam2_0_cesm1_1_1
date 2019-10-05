@@ -202,7 +202,7 @@ end subroutine ndrop_bam_init
 
 subroutine ndrop_bam_run( &
    wbar, tair, rhoair, na, pmode, &
-   nmode, ma, nact)
+   nmode, ma, nact,cldactss)
 
    ! calculates number fraction of aerosols activated as CCN
    ! assumes an internal mixture within each of up to pmode multiple aerosol modes
@@ -224,6 +224,7 @@ subroutine ndrop_bam_run( &
 
    ! output
    real(r8), intent(out) :: nact         ! number fraction of aerosols activated
+   real(r8), intent(out) :: cldactss         ! output of smax
 
    ! local variables
    integer :: maxmodes
@@ -334,7 +335,7 @@ subroutine ndrop_bam_run( &
 
    call maxsat(zeta, eta, nmode, smc, smax)
    lnsmax = log(smax)
-
+   cldactss = smax   !output smax 
    nact = 0._r8
    do m = 1, nmode
       ! skip aerosols with no dispersion, since they aren't meant to be CCN
@@ -343,7 +344,9 @@ subroutine ndrop_bam_run( &
       nact = nact + 0.5_r8*(1._r8 - erf(x))*na(m)
    end do
    nact = nact/rhoair ! convert from #/m3 to #/kg
-
+   ! crterai: Experiment - specify number of activated drops
+   nact = 100.0e6_r8
+   ! crterai: End Experiment
    deallocate( &
       volc,       &
       eta,        &

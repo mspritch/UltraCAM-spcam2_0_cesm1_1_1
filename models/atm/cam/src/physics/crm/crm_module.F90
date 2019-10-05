@@ -34,7 +34,8 @@ subroutine crm        (lchnk, icol, &
                        mc, mcup, mcdn, mcuup, mcudn, &
                        crm_qc, crm_ww, crm_buoya, crm_qi, crm_qs, crm_qg, crm_qr, &
 #ifdef m2005
-                       crm_nc, crm_ni, crm_ns, crm_ng, crm_nr, &
+                       crm_nc, crm_ni, crm_ns, crm_ng, crm_nr, crm_actss, &
+! crt 11/26/18 added new crm_actss output
 #ifdef MODAL_AERO
                        naermod, vaerosol, hygro,     &
 #endif 
@@ -63,6 +64,9 @@ subroutine crm        (lchnk, icol, &
                        ,utendout, vtendout &
 #ifdef CRMVERTADV
                        ,omegal &
+#endif
+#ifdef FOLLOWINVERSION
+                       ,relhum &
 #endif
 #ifdef CRMSUBS
                        ,omegal &
@@ -176,6 +180,9 @@ subroutine crm        (lchnk, icol, &
 #ifdef CRMVERTADV
          real(r8), intent(in) :: omegal(plev) 
 #endif
+#ifdef FOLLOWINVERSION
+         real(r8), intent(in) :: relhum(plev) 
+#endif
 #ifdef CRMSUBS
          real(r8), intent(in) :: omegal(plev)
 #endif
@@ -267,6 +274,7 @@ subroutine crm        (lchnk, icol, &
          real(r8), intent(out) :: crm_ns(plev)  ! mean snow         (#/kg)
          real(r8), intent(out) :: crm_ng(plev)  ! mean graupel      (#/kg)
          real(r8), intent(out) :: crm_nr(plev)  ! mean rain         (#/kg)
+         real(r8), intent(out) :: crm_actss(plev)  ! saturation ratio (1.)
 #ifdef MODAL_AERO
          real(r8), intent(in)  :: naermod(plev, ntot_amode)     ! Aerosol number concentration [/m3]
          real(r8), intent(in)  :: vaerosol(plev, ntot_amode)    ! aerosol volume concentration [m3/m3]
@@ -379,6 +387,10 @@ subroutine crm        (lchnk, icol, &
         integer igstep    ! GCM time steps
         integer iseed   ! seed for random perturbation
         integer gcolindex(pcols)  ! array of global latitude indices
+#ifdef FOLLOWINVERSION
+        integer :: kinversion
+        real(r8) :: pres_inversion
+#endif
  real (r8) :: maxt
 #ifdef CLUBB_CRM
 !Array indicies for spurious RTM check
@@ -638,6 +650,19 @@ real(kind=core_rknd), dimension(nzm) :: &
         cloudliq(1:nx,1:ny,1:nzm) = micro_fields_crm(1:nx,1:ny,1:nzm,11)
 #endif
 
+#ifdef FOLLOWINVERSION
+  ! Identify inversion pressure by hunting for first grid cell above 950 hPa with RH < 30%:
+     kinversion = -1
+     pres_inversion = -999.
+     do k=2,nzm
+       l=plev-k+1
+       if (relhum(l) .le. 30. .and. pmid(l)/100. < 950. .and. kinversion .eq. -1) then
+         kinversion = k
+         pres_inversion = pmid(l)   
+       endif 
+     end do
+#endif
+
 #ifdef m2005
         do k=1, nzm
 #ifdef MODAL_AERO
@@ -775,8 +800,19 @@ real(kind=core_rknd), dimension(nzm) :: &
 ! below 700 hPa, overwrite the default full GCM forcing with a vertical-advection-only component:
 ! Note we are estimating omega*dX/dp using a first order upwind scheme.
 ! INSERT need to add omegal as an input argument from calling routine
-if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -22. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. .and. longitude0 .lt. 280.) .OR. &   ! Peruvian Sc
+! 2013-10-20 CRT: Changed original Peruvian Sc region to a larger region, based on ACME-ECP analysis
+! From: 22S to 12S and 265E to 280E 
+! To: 32S to 12S and 265E to 280E
+if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -32. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. .and. longitude0 .lt. 280.) .OR. &   ! Peruvian Sc
      (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. 22. .and. latitude0 .lt. 30 .and. longitude0 .gt. 235. .and. longitude0 .lt. 245.) ) then   ! Cali Sc
+#ifdef FOLLOWINVERSION
+    if (kinversion .ne. -1 .and. abs(pmid(l)-pres_inversion)/100. .le. 40.) then
+        ! only deny the hor. advection tendencies in a 100 mb thick layer centered on the RH=30% contour
+        ! (and only assuming a satisfying layer was identified)
+        write (6,*) '**AYO! lat,lon,pmid(l),pres_inversion=',latitude0,longitude0,pmid(l)/100.,pres_inversion/100.
+#else
+    if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. ) then
+#endif
         if (omegal(l) .gt. 0.) then
 ! note some variables on CRM vertical grid in k space (e.g. pres)
 ! others in l space, reversed (e.g. pmid; pres(k) = pmid(pver-k+1)
@@ -797,6 +833,7 @@ if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -22. .and. lati
                     (tl(l+1)+gamaz(k-1)-fac_cond*(qccl(l+1)+qiil(l+1))-fac_fus*qiil(l+1)) )/(pmid(l)-pmid(l+1)) 
         end if ! upwind form logic for dXdp
        end if !below 700 hPa at the VOCA grid point?
+      end if !for kinversion
 #endif
 
 !--------------- end of mods.
@@ -874,6 +911,7 @@ if ( (k .gt. 2 .and. pmid(l)/100. .ge. 700. .and. latitude0 .gt. -22. .and. lati
         crm_ns = 0.
         crm_ng = 0.
         crm_nr = 0.
+        crm_actss = 0.  !crt 11/26/18 added supersaturation for diag purposes
 ! hm 8/31/11 add new variables
         aut_crm_a = 0.
         acc_crm_a = 0.
@@ -1143,7 +1181,8 @@ do while(nstep.lt.nstop)
 
 !copied from Mike's code to test the C128 case with CRMSUBS.
 #ifdef CRMSUBS    
-if ( (latitude0 .gt. -22. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. .and. longitude0 .lt. 280.) .OR. &   ! Peruvian Sc
+!2013-10-20 CRT: Expanded the Peruvian domain to -32S from -22S 
+if ( (latitude0 .gt. -32. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. .and. longitude0 .lt. 280.) .OR. &   ! Peruvian Sc
      (latitude0 .gt. 22. .and. latitude0 .lt. 30 .and. longitude0 .gt. 235. .and. longitude0 .lt. 245.) ) then   ! Cali Sc
  
 !   if (latitude0 .gt. -24. .and. latitude0 .lt. -13 .and. longitude0 .gt. 260. .and. longitude0 .lt. 290.) then
@@ -2034,6 +2073,8 @@ if ( (latitude0 .gt. -22. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. 
            crm_nr(l) = crm_nr(l) + micro_field(i,j,k,inr)
            crm_ng(l) = crm_ng(l) + micro_field(i,j,k,ing)
            crm_ns(l) = crm_ns(l) + micro_field(i,j,k,ins)
+!  crt 11/26/18 added changes
+           crm_actss(l) = crm_actss(l) + cldactss(i,j,k)
 #endif
 
 	  end do
@@ -2076,6 +2117,7 @@ if ( (latitude0 .gt. -22. .and. latitude0 .lt. -12.0 .and. longitude0 .gt. 265. 
         crm_ns = crm_ns * factor_xy
         crm_ng = crm_ng * factor_xy
         crm_nr = crm_nr * factor_xy
+        crm_actss = crm_actss * factor_xy
 
 
 ! hm 8/31/11 new output, gcm-grid- and time-step avg
