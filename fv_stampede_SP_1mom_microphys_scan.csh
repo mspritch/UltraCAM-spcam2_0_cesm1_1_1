@@ -11,15 +11,20 @@ set priority       = normal
 set run_start_date = "2008-10-10"
 set start_tod      = "00000"
 #set start_tod      = "43200"
-set Np             = 192
-set Np_else        = 48
+# Test settings from an old "cori knl" script file:
+set Np             = 828
+set Np_else        = 207
+
+# Worked for -N 4 idev testing, but slow:
+#set Np             = 192
+#set Np_else        = 48
 
 ## ====================================================================
 #   define case
 ## ====================================================================
 
 setenv CCSMTAG     UltraCAM-spcam2_0_cesm1_1_1
-setenv CASE        TimestepOutput_Neuralnet_SPCAM_$Np
+setenv CASE        microvary_qci0_qcw0_SPCAM5_2deg_sam1mom_$Np
 #setenv CASE        AeroPD_nudgEns31_4x5_m2005_32x1CRM4000m_L30_MultiBase_0Z_$Np
 setenv CASESET     F_2000_SPCAM_sam1mom_SP
 #setenv CASESET     F_AMIP_SPCAM_sam1mom_shortcrm 
@@ -129,14 +134,10 @@ iradsw = 2
 iradlw = 2
 !iradae = 4 
 
-!empty_htapes = .true.
-!fincl1 = 'cb_ozone_c', 'MSKtem', 'VTH2d', 'UV2d', 'UW2d', 'U2d', 'V2d', 'TH2d', 'W2d', 'UTGWORO'
-
-!fincl1='cb_ozone_c'
-fincl2 = 'T:I','Q:I','QAP:I','QBP:I','QBP:I','TBP:I','VAP:I','CRM_VTEND:I','PS:I','SHFLX:I','LHFLX:I','PTTEND:I','PTEQ:I','SOLIN:I','FSNT:I','FSNS:I','FLNT:I','FLNS:I','U10:I','FLDS:I','FSDS:I','PRECT:I'
-
+empty_htapes = .true.
+fincl1 = 'MICVARQCI0','MICVARQCW0'
 nhtfrq = 0,1
-mfilt  = 0,16
+mfilt  = 0,96
 
 /
 EOF

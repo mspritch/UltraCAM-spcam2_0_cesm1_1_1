@@ -13,18 +13,29 @@ use ifport
 
 implicit none
 
-real(r8) :: period_days_qci0 = 5.0
+real(r8) :: period_days_qci0 = 5.0 ! dummy init, actually chosen randomly below(applies to all)
 real(r8) :: phase_days_qci0 = 1.0
+
+real(r8) :: period_days_qcw0 = 5.0
+real(r8) :: phase_days_qcw0 = 1.0
 
 contains
 
 subroutine init_micro_vary
 ! Set the random period and phase offset for each sinusoidal variation of
 ! microphysics...
+real :: x
   if (masterproc) then
     call random_seed()
-    period_days_qci0 = rand()*5.0 + 5.0 ! 5-10 days, uniform random numer 
-    phase_days_qci0 = rand()*period_days_qci0 ! randomly initiated phase.
+    call random_number (x)
+    period_days_qci0 = x*5.0 + 5.0 ! 5-10 day period, randomly chosen.
+    call random_number (x)
+    phase_days_qci0 = x*period_days_qci0 ! randomly initiated phase.
+
+    call random_number (x)
+    period_days_qcw0 = x*5.0 + 5.0 ! 5-10 day period, randomly chosen.
+    call random_number (x)
+    phase_days_qcw0 = x*period_days_qci0 ! randomly initiated phase.
 #ifdef MICDEBUG
     write (6,*) 'YO masterproc chose period=',period_days_qci0,',phase=',phase_days_qci0
 #endif
@@ -32,18 +43,24 @@ subroutine init_micro_vary
 ! make sure all MPI tasks are aware of the same value:
 #ifdef SPMD
   call mpibcast(period_days_qci0, 1, mpir8, 0, mpicom)
+  call mpibcast(period_days_qcw0, 1, mpir8, 0, mpicom)
 #endif
-#ifdef MICDEBUG
-    write (6,*) 'YO proc =',iam,' got period=',period_days_qci0,',phase=',phase_days_qci0
-#endif
+  write (6,*) 'MICROVARY qci0',iam,' got period=',period_days_qci0,',phase=',phase_days_qci0
+  write (6,*) 'MICROVARY qcw0',iam,' got period=',period_days_qcw0,',phase=',phase_days_qcw0
 
 end subroutine init_micro_vary
 
 subroutine update_micro_vary_vals  (glob_nstep,lchnk,icol)
   integer, intent(in) :: glob_nstep
   integer, intent (in) :: lchnk, icol
-  real, parameter :: central_qci0 = 1.e-4
-  real, parameter :: amp_qci0 = 0.5e-4
+! Parishani et al. 2019 varied qci0 between 5e-6 and 1e-4
+  real, parameter :: central_qci0 = 5.e-5
+  real, parameter :: amp_qci0 = 1e-5 ! should give us twice that range.
+
+! Parishani et al. 2019 varied qcw0 between 1e-3 and 1e-4
+  real, parameter :: central_qcw0 = 5.e-4
+  real, parameter :: amp_qcw0 = 1e-4 ! should give us twice that range.
+
   real(r8) :: currday 
 
   if (glob_nstep .eq. 1) then
@@ -58,7 +75,8 @@ subroutine update_micro_vary_vals  (glob_nstep,lchnk,icol)
   currday = glob_nstep*get_step_size()/24./3600.
 
   ! Update sinusoidally varying in time microphysics parameters:
-  qci0 = central_qci0 + amp_qci0*sin( (currday-phase_days_qci0)/period_days_qci0*2.*3.14159)
+  qci0 = central_qci0 + amp_qci0*sin( (currday+phase_days_qci0)/period_days_qci0*2.*3.14159)
+  qcw0 = central_qcw0 + amp_qcw0*sin( (currday+phase_days_qcw0)/period_days_qcw0*2.*3.14159)
 #ifdef MICDEBUG
   write (6,*) 'HEY iam=',iam,', qci0=',qci0
 #endif

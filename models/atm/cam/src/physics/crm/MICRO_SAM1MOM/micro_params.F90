@@ -43,16 +43,14 @@ real, parameter :: b_grau = 0.5  ! Fall speed exponent for graupel
 
 ! Autoconversion
 
-! hparish is changing the qcw0 threshold following Marat's suggestion to test hypothesis with regards to excessive ITCZ cloud water.
-! the default value is: qcw0 = 1.e-3 
-real, parameter :: qcw0 = 1.e-3      ! Threshold for water autoconversion, g/g  
 
 ! hparish is changing the qci0 threshold following Marat's suggestion to test hypothesis with regards to excessive cloud ice.
 ! the default value is: qci0 = 1.e-4 
 #ifdef MICRO_VARY
-real(r8) :: qci0 ! can be updated.
+real(r8) :: qci0,qcw0 ! can be updated.
 #else
 real, parameter :: qci0 = 1.e-4     ! Threshold for ice autoconversion, g/g
+real, parameter :: qcw0 = 1.e-3      ! Threshold for water autoconversion, g/g  
 #endif
 real, parameter :: alphaelq = 1.e-3  ! autoconversion of cloud water rate coef
 ! HP and MSP concluded that the excess tropospheric ice in UP can be solved by tuning,
