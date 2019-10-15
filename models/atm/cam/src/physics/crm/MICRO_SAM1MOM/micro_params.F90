@@ -1,6 +1,10 @@
+#define MICRO_VARY
 module micro_params
 
 use crm_grid, only: nzm
+#ifdef MICRO_VARY
+use shr_kind_mod, only: r8 => shr_kind_r8
+#endif
 
 implicit none
 
@@ -45,7 +49,11 @@ real, parameter :: qcw0 = 1.e-3      ! Threshold for water autoconversion, g/g
 
 ! hparish is changing the qci0 threshold following Marat's suggestion to test hypothesis with regards to excessive cloud ice.
 ! the default value is: qci0 = 1.e-4 
+#ifdef MICRO_VARY
+real(r8) :: qci0 ! can be updated.
+#else
 real, parameter :: qci0 = 1.e-4     ! Threshold for ice autoconversion, g/g
+#endif
 real, parameter :: alphaelq = 1.e-3  ! autoconversion of cloud water rate coef
 ! HP and MSP concluded that the excess tropospheric ice in UP can be solved by tuning,
 ! therefore hparish is changing the autoconversioin coeff. in the next line to test the model sensitivity. June 2017.

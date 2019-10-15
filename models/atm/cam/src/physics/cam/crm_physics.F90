@@ -1,5 +1,5 @@
 #define SP_DIR_NS
-
+#define MICRO_VARY
 module crm_physics
 !-----------------------------------------------------------------------
 ! Purpose: 
@@ -462,6 +462,10 @@ subroutine crm_physics_init()
     call add_default ('SPNDROPMIX', 1, ' ')
     call add_default ('SPNDROPCOL', 1, ' ')
 
+#ifdef MICRO_VARY
+    call addfld ('MICVARQCI0','',1,'A','qci0 parameter',phys_decomp)
+#endif
+
 #ifdef MODAL_AERO
 ! add dropmixnuc tendencies for all modal aerosol species
     do m = 1, ntot_amode
@@ -697,6 +701,9 @@ end subroutine crm_physics_init
    real(r8) crm_utend(pcols,pver)   ! u tendency of crm             !hparish added for outputting only.
    real(r8) crm_vtend(pcols,pver)   ! v tendency of crm             !hparish added for outputting only.
    real(r8) cldtop(pcols,pver)
+#ifdef MICRO_VARY
+   real(r8) microvary_qci0(pcols)
+#endif
    real(r8) cwp   (pcols,pver)      ! in-cloud cloud (total) water path (kg/m2)
    real(r8) gicewp(pcols,pver)      ! grid-box cloud ice water path  (g/m2)
    real(r8) gliqwp(pcols,pver)      ! grid-box cloud liquid water path (g/m2)
@@ -1491,6 +1498,9 @@ end subroutine crm_physics_init
 #endif
            call t_startf ('crm_main')
 
+#ifdef MICRO_VARY
+           write (6,*) 'HEY about to call crm...'
+#endif
            call crm (lchnk,           i,                                                                                                   &
              state%t(i,:),            state%q(i,:,1),           state%q(i,:,ixcldliq), state%q(i,:,ixcldice),                              &
              ul(:),                   vl(:),                                                                                               &
@@ -1562,6 +1572,9 @@ end subroutine crm_physics_init
 #ifdef STRATOKILLER
              , klev_crmtop &
 !            , tropLev(i) &
+#endif
+#ifdef MICRO_VARY
+             , microvary_qci0(i) &
 #endif
              )
    
@@ -1800,6 +1813,9 @@ end subroutine crm_physics_init
        call outfld('CLDLOW  ',cllow  ,pcols,lchnk)
        call outfld('CLOUDTOP',cldtop, pcols,lchnk)
 
+#ifdef MICRO_VARY
+       call outfld('MICVARQCI0',microvary_qci0,pcols,lchnk)
+#endif
 !       call outfld('Z0M     ',z0m  ,pcols,lchnk)
 !       call outfld('TAUX_CRM',taux_crm  ,pcols,lchnk)
 !       call outfld('TAUY_CRM',tauy_crm  ,pcols,lchnk)

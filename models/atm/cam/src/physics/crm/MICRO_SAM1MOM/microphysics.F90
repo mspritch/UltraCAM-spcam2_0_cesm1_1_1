@@ -1,3 +1,4 @@
+#define MICRO_VARY
 module microphysics
 
 ! module for original SAM bulk microphysics
@@ -101,7 +102,9 @@ subroutine micro_init()
     call task_abort()
   end if
 #endif
+#ifdef MICROVARY
 
+#endif
   a_bg = 1./(tbgmax-tbgmin)
   a_pr = 1./(tprmax-tprmin)
   a_gr = 1./(tgrmax-tgrmin)

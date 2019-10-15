@@ -1,3 +1,4 @@
+#define MICRO_VARY
 module crm_module
 !---------------------------------------------------------------
 !  Super-parameterization's main driver 
@@ -7,7 +8,10 @@ module crm_module
 use abortutils, only: endrun
 use setparm_mod, only : setparm
 use spmd_utils, only : iam
-
+#ifdef MICRO_VARY
+use micro_params, only : qci0
+use micro_vary, only : update_micro_vary_vals
+#endif
 contains
 
 subroutine crm        (lchnk, icol, &
@@ -76,6 +80,9 @@ subroutine crm        (lchnk, icol, &
 #endif
 #ifdef STRATOKILLER
                        ,klev_crmtop_gcm & ! GCM level index for estimatd tropopause height
+#endif
+#ifdef MICRO_VARY
+                       ,microvary_qci0 &
 #endif
                        )   !hparish added utendout and vtendout for outputting.NL
 
@@ -192,6 +199,9 @@ subroutine crm        (lchnk, icol, &
 #ifdef STRATOKILLER
          integer, intent(in) :: klev_crmtop_gcm ! GCM grid's level index for tropopause (or top of model)
          integer :: stratokill_debug_flag
+#endif
+#ifdef MICRO_VARY
+         real(r8), intent(out) :: microvary_qci0
 #endif
 !  Input/Output:
 #ifdef CLUBB_CRM
@@ -513,7 +523,13 @@ real(kind=core_rknd), dimension(nzm) :: &
         else
            LAND = .true.
         end if
-
+#ifdef MICRO_VARY
+        write (6,*) 'HEY task ', iam,' called update_micro with step=',igstep
+        call update_micro_vary_vals(igstep)
+        microvary_qci0 = qci0 ! to be felt by history tape infrastructure
+        write (6,*) 'HEY task ', iam,' culminated with qci0=',qci0
+        
+#endif
 !        create CRM vertical grid and initialize some vertical reference arrays:
 !
         do k = 1, nzm
