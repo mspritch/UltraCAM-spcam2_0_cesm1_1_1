@@ -524,10 +524,10 @@ real(kind=core_rknd), dimension(nzm) :: &
            LAND = .true.
         end if
 #ifdef MICRO_VARY
-        write (6,*) 'HEY task ', iam,' called update_micro with step=',igstep
-        call update_micro_vary_vals(igstep)
+!        write (6,*) 'HEY task ', iam,' called update_micro with step=',igstep
+        call update_micro_vary_vals(igstep,lchnk,icol)
         microvary_qci0 = qci0 ! to be felt by history tape infrastructure
-        write (6,*) 'HEY task ', iam,' culminated with qci0=',qci0
+!        write (6,*) 'HEY task ', iam,' culminated with qci0=',qci0
         
 #endif
 !        create CRM vertical grid and initialize some vertical reference arrays:

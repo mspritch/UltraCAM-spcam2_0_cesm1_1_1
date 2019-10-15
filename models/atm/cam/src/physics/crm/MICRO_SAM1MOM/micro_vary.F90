@@ -1,5 +1,5 @@
 #define MICRO_VARY
-#define MICDEBUG
+!#define MICDEBUG
 #ifdef MICRO_VARY
 module micro_vary
 use micro_params ! will overwrite some of this module's values in ways intended
@@ -8,6 +8,7 @@ use crm_grid, only: nzm
 use time_manager, only: get_step_size
 use mpishorthand, only : mpir8, mpiint, mpicom
 use spmd_utils, only: masterproc,iam
+use ppgrid, only: begchunk
 use ifport
 
 implicit none
@@ -21,6 +22,7 @@ subroutine init_micro_vary
 ! Set the random period and phase offset for each sinusoidal variation of
 ! microphysics...
   if (masterproc) then
+    call random_seed()
     period_days_qci0 = rand()*5.0 + 5.0 ! 5-10 days, uniform random numer 
     phase_days_qci0 = rand()*period_days_qci0 ! randomly initiated phase.
 #ifdef MICDEBUG
@@ -37,14 +39,20 @@ subroutine init_micro_vary
 
 end subroutine init_micro_vary
 
-subroutine update_micro_vary_vals  (glob_nstep)
+subroutine update_micro_vary_vals  (glob_nstep,lchnk,icol)
   integer, intent(in) :: glob_nstep
+  integer, intent (in) :: lchnk, icol
   real, parameter :: central_qci0 = 1.e-4
   real, parameter :: amp_qci0 = 0.5e-4
   real(r8) :: currday 
 
   if (glob_nstep .eq. 1) then
+#ifdef MICDEBUG
+    write (6,*) 'YO masterproc but lchnk,begchunk,icol=',lchnk,begchunk,icol
+#endif
+    if ( lchnk .eq. begchunk .and. icol .eq. 1 ) then
     call init_micro_vary()
+    endif
   end if 
 
   currday = glob_nstep*get_step_size()/24./3600.
