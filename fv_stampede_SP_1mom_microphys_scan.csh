@@ -4,8 +4,8 @@
 # HP has also made other versions of this script for simpler model configurations.
 # Questions? Please contact h.parish@uci.edu at UC Irvine ESS.
 
-set run_time       = 01:59:00
-set queue          = development 
+set run_time       = 47:59:00
+set queue          = normal
 set account        = TG-ATM190002
 set priority       = normal 
 set run_start_date = "2008-10-10"
@@ -24,7 +24,7 @@ set Np_else        = 207
 ## ====================================================================
 
 setenv CCSMTAG     UltraCAM-spcam2_0_cesm1_1_1
-setenv CASE        microvary_qci0_qcw0_SPCAM5_2deg_sam1mom_$Np
+setenv CASE        microvary_qci0_qcw0_SPCAM5_2deg_sam1mom_${Np}_ens_01
 #setenv CASE        AeroPD_nudgEns31_4x5_m2005_32x1CRM4000m_L30_MultiBase_0Z_$Np
 setenv CASESET     F_2000_SPCAM_sam1mom_SP
 #setenv CASESET     F_AMIP_SPCAM_sam1mom_shortcrm 
@@ -193,7 +193,7 @@ set split_str = `echo $bld_cmp | awk '{split($0,a,"="); print a[3]}'`
 set t_or_f    = `echo $split_str | cut -c 2-5`
 
 if ( $t_or_f == "TRUE" ) then
-    #sbatch $CASE.run
+    sbatch $CASE.run
     echo '-------------------------------------------------'
     #echo '----Build and compile is GOOD, job submitted!----'
     echo '----Build and compile is GOOD, job NOT submitted!----'

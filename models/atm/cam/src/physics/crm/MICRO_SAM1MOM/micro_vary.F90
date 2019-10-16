@@ -31,7 +31,6 @@ real :: x
     period_days_qci0 = x*5.0 + 5.0 ! 5-10 day period, randomly chosen.
     call random_number (x)
     phase_days_qci0 = x*period_days_qci0 ! randomly initiated phase.
-
     call random_number (x)
     period_days_qcw0 = x*5.0 + 5.0 ! 5-10 day period, randomly chosen.
     call random_number (x)
@@ -44,6 +43,8 @@ real :: x
 #ifdef SPMD
   call mpibcast(period_days_qci0, 1, mpir8, 0, mpicom)
   call mpibcast(period_days_qcw0, 1, mpir8, 0, mpicom)
+  call mpibcast(phase_days_qci0, 1, mpir8, 0, mpicom)
+  call mpibcast(phase_days_qcw0, 1, mpir8, 0, mpicom)
 #endif
   write (6,*) 'MICROVARY qci0',iam,' got period=',period_days_qci0,',phase=',phase_days_qci0
   write (6,*) 'MICROVARY qcw0',iam,' got period=',period_days_qcw0,',phase=',phase_days_qcw0
@@ -55,11 +56,13 @@ subroutine update_micro_vary_vals  (glob_nstep,lchnk,icol)
   integer, intent (in) :: lchnk, icol
 ! Parishani et al. 2019 varied qci0 between 5e-6 and 1e-4
   real, parameter :: central_qci0 = 5.e-5
-  real, parameter :: amp_qci0 = 1e-5 ! should give us twice that range.
+!  real, parameter :: amp_qci0 = 1e-5 ! should give us twice that range.
+  real, parameter :: amp_qci0 = 2.5e-5 ! actually I want more
 
 ! Parishani et al. 2019 varied qcw0 between 1e-3 and 1e-4
   real, parameter :: central_qcw0 = 5.e-4
-  real, parameter :: amp_qcw0 = 1e-4 ! should give us twice that range.
+!  real, parameter :: amp_qcw0 = 1e-4 ! should give us twice that range.
+  real, parameter :: amp_qcw0 = 2.5e-4 ! actually I want more.
 
   real(r8) :: currday 
 
