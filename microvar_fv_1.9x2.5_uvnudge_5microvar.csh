@@ -87,7 +87,8 @@ cd $CASEROOT
 ./xmlchange  -file env_run.xml -id  DOUT_L_MS                      -val 'FALSE'
 
 ./xmlchange  -file env_run.xml -id  ATM_NCPL              -val '96'    
-#./xmlchange  -file env_run.xml -id  SSTICE_DATA_FILENAME  -val '$DATADIR/atm/cam/sst/sst_HadOIBl_bc_1x1_1850_2013_c140701.nc' 
+./xmlchange  -file env_run.xml -id  SSTICE_DATA_FILENAME  -val '$DATADIR/atm/cam/sst/sst_HadOIBl_bc_1.9x2.5_1850_2017_c180507.nc'
+# note options like the above can be discovered via: svn ls https://svn-ccsm-inputdata.cgd.ucar.edu/trunk/inputdata/atm/cam/sst
 
 cat <<EOF >! user_nl_cam
 
@@ -130,7 +131,7 @@ Nudge_PScoef = 0.
 Nudge_Beg_Year = 2003
 Nudge_Beg_Month = 01
 Nudge_Beg_Day = 01
-Nudge_End_Year = 2018
+Nudge_End_Year = 2017
 Nudge_End_Month = 12 
 Nudge_End_Day = 01
 

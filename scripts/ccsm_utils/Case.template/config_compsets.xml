@@ -1478,7 +1478,7 @@ TODO: for AMIP, want to have another variable that crashes if end of dataset is 
 
 <compset NAME="F_AMIP_SPCAM_sam1mom" SHORTNAME="FSPCAMsam1mom"
          DESC="SPCAM for sam1mom case"
-         CAM_CONFIG_OPTS="-rad camrt -chem trop_bam -phys cam4 -use_SPCAM -crm_nx 32 -crm_ny 1 -crm_nz 125 -nlev 125 -crm_dx 250 -crm_dt 1.0D0 -SPCAM_microp_scheme sam1mom"
+         CAM_CONFIG_OPTS="-rad camrt -chem trop_bam -phys cam4 -use_SPCAM -crm_nx 32 -crm_ny 1 -crm_nz 30 -nlev 30 -crm_dx 4000 -crm_dt 20.0D0 -SPCAM_microp_scheme sam1mom"
 />
 
 <compset NAME="F_AMIP_SPCAM_sam1mom_hi_vert_res" SHORTNAME="FSPCAMsam1momhires"
