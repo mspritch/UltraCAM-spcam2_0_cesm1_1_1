@@ -35,10 +35,11 @@ cat >! $file << EOF1
 #SBATCH --cpus-per-task=$maxthrds
 #SBATCH --exclusive
 #SBATCH --mail-type=END
-#SBATCH --mail-user=rterai@uci.edu
+#SBATCH --mail-user=mspritch@uci.edu
 #SBATCH --output=cesm%jodid.out
 #SBATCH --error=cesm%jodid.err
 #SBATCH -p $qname
+#SBATCH -A TG-ATM190002
 EOF1
 
 #################################################################################
