@@ -465,6 +465,9 @@ subroutine crm_physics_init()
 #ifdef MICRO_VARY
     call addfld ('MICVARQCI0','',1,'A','qci0 parameter',phys_decomp)
     call addfld ('MICVARQCW0','',1,'A','qcw0 parameter',phys_decomp)
+    call addfld ('MICVARVTICE','',1,'A','vtice parameter',phys_decomp)
+    call addfld ('MICVARTBGMIN','',1,'A','tbgmin parameter',phys_decomp)
+    call addfld ('MICVARTBGMAX','',1,'A','tbgmax parameter',phys_decomp)
 #endif
 
 #ifdef MODAL_AERO
@@ -703,7 +706,7 @@ end subroutine crm_physics_init
    real(r8) crm_vtend(pcols,pver)   ! v tendency of crm             !hparish added for outputting only.
    real(r8) cldtop(pcols,pver)
 #ifdef MICRO_VARY
-   real(r8) microvary_qci0(pcols),microvary_qcw0(pcols)
+   real(r8) microvary_qci0(pcols),microvary_qcw0(pcols),microvary_vtice(pcols),microvary_tbgmin(pcols),microvary_tbgmax(pcols)
 #endif
    real(r8) cwp   (pcols,pver)      ! in-cloud cloud (total) water path (kg/m2)
    real(r8) gicewp(pcols,pver)      ! grid-box cloud ice water path  (g/m2)
@@ -1573,6 +1576,7 @@ end subroutine crm_physics_init
 #endif
 #ifdef MICRO_VARY
              , microvary_qci0(i),microvary_qcw0(i) &
+             , microvary_vtice(i),microvary_tbgmin(i),microvary_tbgmax(i) &
 #endif
              )
    
@@ -1814,6 +1818,9 @@ end subroutine crm_physics_init
 #ifdef MICRO_VARY
        call outfld('MICVARQCI0',microvary_qci0,pcols,lchnk)
        call outfld('MICVARQCW0',microvary_qcw0,pcols,lchnk)
+       call outfld('MICVARVTICE',microvary_vtice,pcols,lchnk)
+       call outfld('MICVARTBGMIN',microvary_tbgmin,pcols,lchnk)
+       call outfld('MICVARTBGMAX',microvary_tbgmax,pcols,lchnk)
 #endif
 !       call outfld('Z0M     ',z0m  ,pcols,lchnk)
 !       call outfld('TAUX_CRM',taux_crm  ,pcols,lchnk)

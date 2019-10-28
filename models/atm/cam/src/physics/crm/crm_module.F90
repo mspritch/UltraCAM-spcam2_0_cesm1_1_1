@@ -10,7 +10,7 @@ use setparm_mod, only : setparm
 use spmd_utils, only : iam
 #ifdef MICRO_VARY
 use micro_params, only : qci0, qcw0
-use micro_vary, only : update_micro_vary_vals
+use micro_vary, only : update_micro_vary_vals,vtice
 #endif
 contains
 
@@ -82,7 +82,7 @@ subroutine crm        (lchnk, icol, &
                        ,klev_crmtop_gcm & ! GCM level index for estimatd tropopause height
 #endif
 #ifdef MICRO_VARY
-                       ,microvary_qci0,microvary_qcw0 &
+                       ,microvary_qci0,microvary_qcw0,microvary_vtice,microvary_tbgmin,microvary_tbgmax &
 #endif
                        )   !hparish added utendout and vtendout for outputting.NL
 
@@ -201,7 +201,7 @@ subroutine crm        (lchnk, icol, &
          integer :: stratokill_debug_flag
 #endif
 #ifdef MICRO_VARY
-         real(r8), intent(out) :: microvary_qci0, microvary_qcw0
+         real(r8), intent(out) :: microvary_qci0, microvary_qcw0,microvary_vtice, microvary_tbgmin,microvary_tbgmax
 #endif
 !  Input/Output:
 #ifdef CLUBB_CRM
@@ -528,6 +528,10 @@ real(kind=core_rknd), dimension(nzm) :: &
         call update_micro_vary_vals(igstep,lchnk,icol)
         microvary_qci0 = qci0 ! to be felt by history tape infrastructure
         microvary_qcw0 = qcw0 ! to be felt by history tape infrastructure
+        microvary_vtice = vtice
+        microvary_tbgmin = tbgmin
+        microvary_tbgmax = tbgmax
+        
 !        write (6,*) 'HEY task ', iam,' culminated with qci0=',qci0
         
 #endif

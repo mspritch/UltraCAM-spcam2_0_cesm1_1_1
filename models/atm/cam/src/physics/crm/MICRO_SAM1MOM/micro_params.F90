@@ -23,8 +23,6 @@ real, parameter :: rhog = 400.  ! Density of graupel, kg/m3
 ! to test if this reduces the excessive extratropical cloud ice.
 ! default is: tbgmin = 253.16
 ! default is: tbgmax = 273.16 
-real, parameter :: tbgmin = 253.16    ! Minimum temperature for cloud water., K
-real, parameter :: tbgmax = 273.16    ! Maximum temperature for cloud ice, K
 real, parameter :: tprmin = 268.16    ! Minimum temperature for rain, K
 real, parameter :: tprmax = 283.16    ! Maximum temperature for snow+graupel, K
 real, parameter :: tgrmin = 223.16    ! Minimum temperature for snow, K
@@ -48,7 +46,10 @@ real, parameter :: b_grau = 0.5  ! Fall speed exponent for graupel
 ! the default value is: qci0 = 1.e-4 
 #ifdef MICRO_VARY
 real(r8) :: qci0,qcw0 ! can be updated.
+real(r8) :: tbgmin,tbgmax ! can be updated
 #else
+real, parameter :: tbgmin = 253.16    ! Minimum temperature for cloud water., K
+real, parameter :: tbgmax = 273.16    ! Maximum temperature for cloud ice, K
 real, parameter :: qci0 = 1.e-4     ! Threshold for ice autoconversion, g/g
 real, parameter :: qcw0 = 1.e-3      ! Threshold for water autoconversion, g/g  
 #endif

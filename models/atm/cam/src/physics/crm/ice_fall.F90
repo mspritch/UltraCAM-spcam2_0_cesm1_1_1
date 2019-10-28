@@ -1,4 +1,4 @@
-
+#define MICRO_VARY
 subroutine ice_fall()
 
 
@@ -8,6 +8,9 @@ use vars
 use microphysics, only: micro_field, index_cloud_ice
 !use micro_params
 use params
+#ifdef MICRO_VARY
+use micro_vary, only: vtice
+#endif
 
 implicit none
 
@@ -62,7 +65,11 @@ do k = max(1,kmin-1),kmax
 
          ! Ice sedimentation velocity depends on ice content. The fiting is
          ! based on the data by Heymsfield (JAS,2003). -Marat
+#ifdef MICRO_VARY
+         vt_ice = vtice ! micro_vary subroutine does the time modulation
+#else
          vt_ice = min(0.4,8.66*(max(0.,qic)+1.e-10)**0.24)   ! Heymsfield (JAS, 2003, p.2607)
+#endif
 
 ! following Marat's suggestion to test a solution for the excessive cloud ice in UP,
 ! hparish is setting the ice terminal velocity to 0.1 (replacing the vt_ice above).

@@ -4,7 +4,7 @@
 # HP has also made other versions of this script for simpler model configurations.
 # Questions? Please contact h.parish@uci.edu at UC Irvine ESS.
 
-set run_time       = 47:59:00
+set run_time       = 23:59:00
 set queue          = normal
 set account        = TG-ATM190002
 set priority       = normal 
@@ -24,7 +24,7 @@ set Np_else        = 207
 ## ====================================================================
 
 setenv CCSMTAG     UltraCAM-spcam2_0_cesm1_1_1
-setenv CASE        microvary_qci0_qcw0_SPCAM5_2deg_sam1mom_${Np}_ens_01
+setenv CASE        microvary_qci0_qcw0_SPCAM5_2deg_sam1mom_${Np}_ens_05
 #setenv CASE        AeroPD_nudgEns31_4x5_m2005_32x1CRM4000m_L30_MultiBase_0Z_$Np
 setenv CASESET     F_2000_SPCAM_sam1mom_SP
 #setenv CASESET     F_AMIP_SPCAM_sam1mom_shortcrm 
@@ -90,7 +90,7 @@ set-run-opts:
 cd $CASEROOT
 
 ./xmlchange  -file env_run.xml -id  RESUBMIT      -val '19'
-./xmlchange  -file env_run.xml -id  STOP_N        -val '189'
+./xmlchange  -file env_run.xml -id  STOP_N        -val '1000'
 ./xmlchange  -file env_run.xml -id  STOP_OPTION   -val 'ndays'
 #./xmlchange  -file env_run.xml -id  REST_N        -val '6'
 ./xmlchange  -file env_run.xml -id  REST_OPTION   -val 'ndays'       # 'nhours' 'nmonths' 'nsteps' 'nyears' 
@@ -134,10 +134,10 @@ iradsw = 2
 iradlw = 2
 !iradae = 4 
 
-empty_htapes = .true.
-fincl1 = 'MICVARQCI0','MICVARQCW0'
-nhtfrq = 0,1
-mfilt  = 0,96
+empty_htapes = .false.
+fincl2 = 'MICVARQCI0','MICVARQCW0','MICVARVTICE:A','MICVARTBGMIN:A','MICVARTBGMAX:A','PS:A','SOLIN:A','SHFLX:A','LHFLX','TGCLDLWP:A','TGCLDIWP:A','FLUT:A','FSNTOA:A','SWCF:A','LWCF:A','CLDTOT:A','CLDLOW:A','CLDMED:A','CLDHGH:A','PRECT:A','T:A','Q:A','PTTEND:A','PTEQ:A','QRL:A','QRS:A'
+nhtfrq = 0,-24
+mfilt  = 0,1
 
 /
 EOF
