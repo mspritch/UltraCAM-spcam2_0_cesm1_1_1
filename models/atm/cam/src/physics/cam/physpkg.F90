@@ -1843,6 +1843,20 @@ subroutine tphysbc (ztodt,               &
     ! Dump out "before physics" state
     !
     call diag_state_b4_phys_write (state)
+    
+    #ifdef NNCAM
+      ! INSERT store some local variables that contain the inputs to the NN here.
+      ! TBP --> state%t at this stage.
+      ! QBP --> state%q(:,:,1) at this stage.
+      ! CLDLIQBP --> state%q(:,:,2) at this stage
+      ! CLDICEBP --> state%q(:,:,3) at this stage
+      ! PS --> state%ps at this stage.
+      
+      ! TODO: find the local variables that contain "SOLIN" and "SHFLX,LHFLX" from previous time step.
+      ! cam_in%shf --> SHFLX (from previous timestep) I think
+      ! cam_in%lhf --> LHFLX (from previous timestep) I think
+      
+    #endif
 
     ! compute mass integrals of input tracers state
     call check_tracers_init(state, tracerint)
