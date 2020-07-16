@@ -512,6 +512,9 @@ end function radiation_nextsw_cday
        fsns,    fsnt, flns,    flnt,  &
        fsds, net_flx)
 
+! pritch: INSERT/TODO solin as an output variable in the arg list above from this subroutine (currently only populated locally below) so we can 
+! send it up the call stack to where we will need to have it in local memory to plug into the front end of the NN input.
+
     !----------------------------------------------------------------------- 
     ! 
     ! Purpose: 
