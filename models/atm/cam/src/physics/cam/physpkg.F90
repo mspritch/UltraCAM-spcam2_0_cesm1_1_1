@@ -1856,6 +1856,9 @@ subroutine tphysbc (ztodt,               &
       ! cam_in%shf --> SHFLX (from previous timestep) I think
       ! cam_in%lhf --> LHFLX (from previous timestep) I think
       
+      ! Will need to define new local variables out here for later use as NN inputs, e.g.:
+      !      nn_input_tbp = state%t ! repeat for q,etc.
+
     #endif
 
     ! compute mass integrals of input tracers state
