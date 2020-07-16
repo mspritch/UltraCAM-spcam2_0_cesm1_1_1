@@ -1642,7 +1642,7 @@ subroutine tphysbc (ztodt,               &
     use microp_driver,   only: microp_driver_tend
     use macrop_driver,   only: macrop_driver_tend
     use physics_types,   only: physics_state, physics_tend, physics_ptend, physics_update, physics_ptend_init
-    use cam_diagnostics, only: diag_conv_tend_ini, diag_phys_writeout, diag_conv, diag_export, diag_state_b4_phys_write
+    use cam_diagnostics, only: diag_conv_tend_ini, diag_phys_writeout, diag_conv, diag_export, diag_state_b4_phys_write, diag_state_b4_coupling
     use cam_history,     only: outfld
     use physconst,       only: cpair, latvap
     use constituents,    only: pcnst, qmin, cnst_get_ind
@@ -2200,9 +2200,11 @@ subroutine tphysbc (ztodt,               &
     call tropopause_output(state)
     call t_stopf('tropopause')
 
+    call diag_state_b4_coupling (state) ! pritch & beucler.
+
     ! Save atmospheric fields to force surface models
     call t_startf('cam_export')
-    call cam_export (state,cam_out,pbuf)
+    call cam_export (state,cam_out,pbuf) ! nb NN2L* variables come from this state (I think.. the cam_out structure)... pritch.
     call t_stopf('cam_export')
 
     ! Write export state to history file
